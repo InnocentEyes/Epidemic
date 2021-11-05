@@ -1,0 +1,46 @@
+spring:
+  web:
+    resources:
+      static-locations: classpath:/static/
+  mvc:
+    servlet:
+      path: /
+      load-on-startup: 1
+  datasource:
+    name: root
+    password: qzl200919yya
+    url: jdbc:mysql://localhost:3306/
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      stat-view-servlet:
+        url-pattern: /druid/
+        enabled: true
+        login-username: qzlzzz
+        login-password: 123456
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+      filter:
+        stat:
+          merge-sql: true
+          slow-sql-millis: 1000
+        wall:
+          enabled: true
+          config:
+            drop-table-allow: false
+            alter-table-allow: false
+            select-into-outfile-allow: false
+  jdbc:
+    template:
+      query-timeout: 3
+  redis: #此连接应为主从+哨兵 initial为一个端口
+    port: 6379
+    host: 192.168.119.128
+    database: 0
+    client-type: lettuce
+    lettuce:
+      pool:
+        max-active: 10
+mybatis-plus:
+  config-location: classpath:mybatis.xml
