@@ -1,0 +1,59 @@
+package com.qzlnode.epidemic.miniprogram.util;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qzlnode.epidemic.miniprogram.pojo.Comment;
+import com.qzlnode.epidemic.miniprogram.pojo.User;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
+import java.util.Iterator;
+import java.util.Map;
+
+/**
+ * <h2>解析客户端传入的信息，并封装使用</h2>
+ * @author qzlzzz
+ */
+public class ParseUtil {
+    /**
+     * 解析User信息
+     * @param userMessage 信息
+     * @return 返回解析好的User对象
+     * @throws JsonProcessingException 解析异常
+     */
+    public static User parseUser(String userMessage) throws JsonProcessingException {
+        Assert.notNull(userMessage,"userMessage is null");
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode tree = mapper.readTree(userMessage);
+        User user = new User();
+        String phone = tree.get("phone").asText();
+        if(!StringUtils.hasLength(phone)){
+            throw new IllegalArgumentException("user phone is null");
+        }
+        user.setUserPhoneNumber(phone);
+        String password = tree.get("password").asText();
+        if(!StringUtils.hasLength(password)){
+            throw new IllegalArgumentException("user password is null");
+        }
+        user.setUserPassword(password);
+        return user;
+    }
+
+    /**
+     * 解析请求带来的参数信息,解析后封装成Comment对象返回给调用方法。
+     * @param commentDetail 信息
+     * @return
+     */
+    public static Comment parseComment(Map<String,String> commentDetail){
+        Assert.notNull(commentDetail,"comment map is null");
+        Comment comment = new Comment();
+        comment.setLikes(0);
+        String userComment = commentDetail.get("comment");
+        if(!StringUtils.hasLength(userComment)){
+            return null;
+        }
+        comment.setComment(userComment);
+        return comment;
+    }
+}

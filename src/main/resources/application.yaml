@@ -9,7 +9,7 @@ spring:
   datasource:
     name: root
     password: qzl200919yya
-    url: jdbc:mysql://localhost:3306/
+    url: jdbc:mysql://localhost:3306/epidemic
     driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       stat-view-servlet:

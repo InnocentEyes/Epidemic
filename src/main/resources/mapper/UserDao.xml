@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzlnode.epidemic.miniprogram.dao.mysql.UserDao">
+
+
+  <select id="findUser" resultType="com.qzlnode.epidemic.miniprogram.pojo.User">
+    select `id`,`password`,`user_name` from user_message where `phone_number` = #{userPhoneNumber};
+  </select>
+
+</mapper>
