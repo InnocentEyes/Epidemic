@@ -4,9 +4,18 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qzlnode.epidemic.miniprogram.dao.mysql.UserDao">
 
+  <resultMap id="user_select_sql" type="com.qzlnode.epidemic.miniprogram.pojo.User">
+    <id column="id" property="id"/>
+    <id column="password" property="userPassword"/>
+    <id column="phone_number" property="userPhoneNumber" />
+    <id column="user_name" property="userName"/>
+  </resultMap>
+  <insert id="registerUser">
+        insert into user_message(`user_name`,`phone_number`,`password`) values (#{userName},#{userPhoneNumber},#{userPassword})
+  </insert>
 
-  <select id="findUser" resultType="com.qzlnode.epidemic.miniprogram.pojo.User">
-    select `id`,`password`,`user_name` from user_message where `phone_number` = #{userPhoneNumber};
+  <select id="findUser" resultType="java.lang.Integer">
+    select `id` from user_message where `phone_number` = #{userPhoneNumber} and `password` = #{userPassword};
   </select>
 
 </mapper>

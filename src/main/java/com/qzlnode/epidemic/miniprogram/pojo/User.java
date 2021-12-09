@@ -48,7 +48,6 @@ public class User {
                 "id=" + id +
                 ", userPhoneNumber='" + userPhoneNumber + '\'' +
                 ", userName='" + userName + '\'' +
-                ", userPassword='" + userPassword + '\'' +
                 '}';
     }
 }

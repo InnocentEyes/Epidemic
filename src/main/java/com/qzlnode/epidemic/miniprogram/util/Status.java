@@ -5,7 +5,7 @@ package com.qzlnode.epidemic.miniprogram.util;
  * <p>响应状态码</p>
  * @author qzlzzz
  */
-public enum MessageUtil {
+public enum Status {
     /**
      * 该状态码表示用户操作出错，或者是用户登录出错。
      */

@@ -10,12 +10,13 @@ import org.springframework.util.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * <h2>解析客户端传入的信息，并封装使用</h2>
  * @author qzlzzz
  */
-public class ParseUtil {
+public class ParseMessage {
     /**
      * 解析User信息
      * @param userMessage 信息
@@ -23,7 +24,6 @@ public class ParseUtil {
      * @throws JsonProcessingException 解析异常
      */
     public static User parseUser(String userMessage) throws JsonProcessingException {
-        Assert.notNull(userMessage,"userMessage is null");
         ObjectMapper mapper = new ObjectMapper();
         JsonNode tree = mapper.readTree(userMessage);
         User user = new User();
@@ -37,6 +37,11 @@ public class ParseUtil {
             throw new IllegalArgumentException("user password is null");
         }
         user.setUserPassword(password);
+        String userName = tree.get("name").asText();
+        if(userName == null){
+            userName = phone;
+        }
+        user.setUserName(userName);
         return user;
     }
 

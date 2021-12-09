@@ -44,3 +44,10 @@ spring:
         max-active: 10
 mybatis-plus:
   config-location: classpath:mybatis.xml
+logging:
+  level:
+    com:
+      qzlnode: info
+  file:
+    name: C:/log/epidemic.log
+

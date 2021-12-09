@@ -9,7 +9,7 @@ import com.qzlnode.epidemic.miniprogram.pojo.User;
  */
 public interface IndexService {
 
-    User LoginService();
+    User LoginService(User user);
 
-    boolean registerService();
+    boolean registerService(User user);
 }

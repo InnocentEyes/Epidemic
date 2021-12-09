@@ -4,9 +4,9 @@ package com.qzlnode.epidemic.miniprogram.util;
  * <h2>排序的工具类</h2>
  * @author qzlzzz
  */
-public class SortUtil {
+public class Sort {
     /**
-     * 三向切分快速排序的Api,其内部调用{@link SortUtil#quick3way(int[], int, int)}
+     * 三向切分快速排序的Api,其内部调用{@link Sort#quick3way(int[], int, int)}
      * @param a 要排序的数组
      */
     public static void quick3waySort(int[] a){
@@ -14,7 +14,7 @@ public class SortUtil {
     }
 
     /**
-     * 插入排序的Api,其内部调用{@link SortUtil#insert(int[], int, int)}
+     * 插入排序的Api,其内部调用{@link Sort#insert(int[], int, int)}
      * @param a 要排序的数组
      */
     public static void insertSort(int[] a){
@@ -22,7 +22,7 @@ public class SortUtil {
     }
 
     /**
-     * 归并排序的Api,其内部调用{@link SortUtil#mergeSort(int[], int, int)}
+     * 归并排序的Api,其内部调用{@link Sort#mergeSort(int[], int, int)}
      * @param a 要排序的数组
      */
     public static void mergeSort(int[] a){
