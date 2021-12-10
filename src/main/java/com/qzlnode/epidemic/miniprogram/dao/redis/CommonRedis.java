@@ -12,12 +12,12 @@ public interface CommonRedis<T> {
      * <h3>根据key值往redis数据库中取出值</h3>
      * @return
      */
-    String get();
+    String[] get(T object);
 
     /**
      * <h3>向redis数据库中存入key-value值</h3>
      */
-    void set();
+    void set(T object);
 
     /**
      * <h3>删除库中的键值对</h3>

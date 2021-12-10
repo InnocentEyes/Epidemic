@@ -39,7 +39,7 @@ public class IndexServiceImpl implements IndexService {
     public User LoginService(User user) {
         Assert.notNull(user,"user in login service is null");
         user.setUserPassword(BASE64.encode(user.getUserPassword()));
-        Integer userId = Integer.parseInt(redisForUser.get());
+        Integer userId = Integer.parseInt(redisForUser.get(user)[0]);
         if(userId != null){
             user.setId(userId);
             return user;
@@ -47,8 +47,7 @@ public class IndexServiceImpl implements IndexService {
         userId = userDao.findUser(user);
         if(userId != null){
             user.setId(userId);
-            MessageHolder.setUser(user);
-            redisForUser.set();
+            redisForUser.set(user);
             return user;
         }
         return null;
@@ -63,7 +62,7 @@ public class IndexServiceImpl implements IndexService {
     public boolean registerService(User user) {
         Assert.notNull(user,"register service : user is null");
         user.setUserPassword(BASE64.encode(user.getUserPassword()));
-        if(StringUtils.hasLength(redisForUser.get())){
+        if(StringUtils.hasLength(redisForUser.get(user)[0])){
             return false;//已经登录
         }
         boolean target = userDao.registerUser(user);

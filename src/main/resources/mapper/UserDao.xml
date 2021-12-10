@@ -10,6 +10,7 @@
     <id column="phone_number" property="userPhoneNumber" />
     <id column="user_name" property="userName"/>
   </resultMap>
+
   <insert id="registerUser">
         insert into user_message(`user_name`,`phone_number`,`password`) values (#{userName},#{userPhoneNumber},#{userPassword})
   </insert>

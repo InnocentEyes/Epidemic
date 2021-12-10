@@ -23,22 +23,21 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class RedisForUser implements CommonRedis<User>, Operations<HashOperations<String, Object, Object>> {
 
-    private Map<String,HashOperations<String, Object, Object>> map = new HashMap<>(1);
+    private Map<String,HashOperations<String, Object, Object>> map = new HashMap<>();
 
     private final ReentrantLock lock = new ReentrantLock();//独占锁,乐观锁。可设置为公平锁,但是会影响效率。
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private StringRedisTemplate redisTemplate;
+    private StringRedisTemplate redis;
 
     /**
      *
      * @return
      */
     @Override
-    public String get(){
-        User user = MessageHolder.getUser();
+    public String[] get(User user){
         HashOperations<String, Object, Object> operation = getOperation();
         String key = "user_phone :"+user.getUserPhoneNumber();
         String userId = null;
@@ -47,15 +46,14 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
         }catch (Exception e){
             logger.error("get the user{} id error",new Object[]{user.getId()});
         }
-        return userId;
+        return new String[]{userId};
     }
 
     /**
      * <h3></h3>
      */
     @Override
-    public void set() {
-        User user = MessageHolder.getUser();
+    public void set(User user) {
         if(user.getId() == 0){
             logger.info("user named :"+user.getUserName()+"who user id is null");
             throw new IllegalArgumentException("user id is null");
@@ -67,7 +65,7 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
         userMessage.put("password",user.getUserPassword());
         try {
             operation.putAll(key, userMessage);
-            redisTemplate.expireAt(key,new Date(System.currentTimeMillis() + 1000*60*30));
+            redis.expireAt(key,new Date(System.currentTimeMillis() + 1000*60*30));
         }catch (Exception e){
             logger.error("put the user named"+user.getUserName()+"message to redis error");
             return;
@@ -86,7 +84,7 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
             if(lock.tryLock(500, TimeUnit.MILLISECONDS)){
                 try{
                     if(map.get("operation") == null){
-                        map.put("operation",redisTemplate.opsForHash());
+                        map.put("operation",redis.opsForHash());
                     }
                 }finally {
                     lock.unlock();

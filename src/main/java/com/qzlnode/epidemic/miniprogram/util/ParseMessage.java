@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,6 +60,26 @@ public class ParseMessage {
             return null;
         }
         comment.setComment(userComment);
+        Integer commentTypeNo = Integer.parseInt(commentDetail.get("type_no"));
+        if(commentTypeNo == null){
+            return null;
+        }
+        comment.setTypeNo(commentTypeNo);
         return comment;
     }
+
+    /**
+     *
+     * @param typeNo
+     * @return
+     */
+    public static Comment parseComment(Integer typeNo){
+        Comment comment = new Comment();
+        if(typeNo < 0 || typeNo > 10){
+            return null;
+        }
+        comment.setTypeNo(typeNo);
+        return comment;
+    }
+
 }

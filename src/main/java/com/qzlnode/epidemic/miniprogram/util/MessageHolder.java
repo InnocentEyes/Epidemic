@@ -50,7 +50,9 @@ public class MessageHolder {
      */
     public static Integer getUserId(){
         User user = getUser();
-        Assert.notNull(user,"session user is null");
+        if(user.getId() == 0){
+            throw new IllegalArgumentException("user id is null");
+        }
         return user.getId();
     }
 

@@ -5,8 +5,10 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
+import org.graalvm.compiler.lir.LIRInstruction;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -61,6 +63,10 @@ public class Security {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(TOKEN_KEY)).build();
        try {
            DecodedJWT verify = verifier.verify(token);
+           Integer user_id = verify.getClaim("user_id").asInt();
+           User user = new User();
+           user.setId(user_id);
+           MessageHolder.setUser(user);
            return true;
        }catch (SignatureVerificationException exception){
             return false;

@@ -6,10 +6,11 @@ import com.qzlnode.epidemic.miniprogram.service.IndexService;
 import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import com.qzlnode.epidemic.miniprogram.util.ParseMessage;
 import com.qzlnode.epidemic.miniprogram.util.Security;
-import com.qzlnode.epidemic.miniprogram.util.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,29 +39,22 @@ public class IndexController {
      * @throws JsonProcessingException
      */
     @PostMapping(value = "/login",produces = "application/json;charset=utf-8")
-    public Map<String,Object> login(@RequestBody String userMessage, HttpServletResponse response) throws JsonProcessingException {
-        Map<String,Object> map = new HashMap<>();
+    public ResponseEntity<String> login(@RequestBody String userMessage, HttpServletResponse response) throws JsonProcessingException {
         if(userMessage == null){
             logger.error("login :user message is null");
-            map.put("error",Status.ERROR_CODE.getStatus());
-            return map;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         User user = ParseMessage.parseUser(userMessage);
-        MessageHolder.setUser(user);
         user = indexService.LoginService(user);
-        MessageHolder.clearData();
         if(user.getId() != null) {
             logger.info("user login acc");
             String token = Security.getToken(user);
             response.setHeader("Access-Control-Expose-Headers", "user_token");
             response.setHeader("user_token", token);
-            map.put("acc",Status.TRUE_CODE.getStatus());
-            map.put("user",user.toString());
-            return map;
+            return new ResponseEntity<>(user.toString(),HttpStatus.FOUND);
         }
-        map.put("error",Status.ERROR_CODE.getStatus());
         logger.info("user named"+user.getUserName()+"login error");
-        return map;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -70,18 +64,16 @@ public class IndexController {
      * @throws JsonProcessingException
      */
     @PostMapping(value = "/register",produces = "application/json;charset=utf-8")
-    public String register(@RequestBody String userMessage) throws JsonProcessingException {
+    public ResponseEntity<String> register(@RequestBody String userMessage) throws JsonProcessingException {
         if(!StringUtils.hasLength(userMessage)){
             logger.error("register : user message is null");
-            return Status.ERROR_CODE.getStatus();//没有用户信息
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);//没有用户信息
         }
         User user = ParseMessage.parseUser(userMessage);
-        MessageHolder.setUser(user);
         boolean target = indexService.registerService(user);
-        MessageHolder.clearData();
         if(!target){
-            return Status.ERROR_CODE.getStatus();//已有账户或已经登录
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//已有账户或已经登录
         }
-        return Status.TRUE_CODE.getStatus();//登录成功
+        return new ResponseEntity<>(HttpStatus.OK);//登录成功
     }
 }

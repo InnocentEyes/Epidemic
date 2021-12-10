@@ -9,5 +9,5 @@ public interface Operations<T> {
      *
      * @return
      */
-    T getOperation() throws InterruptedException;
+    T getOperation();
 }

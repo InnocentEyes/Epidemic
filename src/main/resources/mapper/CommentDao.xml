@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzlnode.epidemic.miniprogram.dao.mysql.CommentDao">
+
+  <resultMap id="comment_sql" type="com.qzlnode.epidemic.miniprogram.pojo.Comment">
+    <id column="id" property="commentId"/>
+    <id column="user_id" property="userId"/>
+    <id column="user_name" property="userName"/>
+    <id column="type_no" property="typeNo"/>
+    <id column="likes" property="likes"/>
+    <id column="desc" property="comment"/>
+  </resultMap>
+
+  <insert id="addComment">
+    <if test="userId != null and typeNo != null">
+      insert into(`user_id`,`type_no`,`likes`,`desc`) values (#{userId},#{typeNo},#{likes},#{comment})
+    </if>
+  </insert>
+
+  <select id="findComment" resultMap="comment_sql">
+     <if test="user != null">
+        select `user_name`,`desc`,`likes`,`pubtime` from user_message,comment
+        where user_message.id = comment.user_id and comment.type_no = #{typeNo};
+     </if>
+  </select>
+</mapper>
