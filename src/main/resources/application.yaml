@@ -7,9 +7,9 @@ spring:
       path: /
       load-on-startup: 1
   datasource:
-    name: root
-    password: 123456
     url: jdbc:mysql://localhost:3306/epidemic
+    username: root
+    password: qzl200919yya
     driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       stat-view-servlet:
@@ -44,6 +44,8 @@ spring:
         max-active: 10
 mybatis-plus:
   config-location: classpath:mybatis.xml
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.qzlnode.epidemic.miniprogram.pojo
 logging:
   level:
     com:

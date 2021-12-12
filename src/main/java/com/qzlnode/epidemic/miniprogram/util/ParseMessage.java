@@ -4,14 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
+import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * <h2>解析客户端传入的信息，并封装使用</h2>
@@ -24,9 +22,14 @@ public class ParseMessage {
      * @return 返回解析好的User对象
      * @throws JsonProcessingException 解析异常
      */
-    public static User parseUser(String userMessage) throws JsonProcessingException {
+    public static User ToUser(String userMessage) {
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode tree = mapper.readTree(userMessage);
+        JsonNode tree = null;
+        try {
+            tree = mapper.readTree(userMessage);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         User user = new User();
         String phone = tree.get("phone").asText();
         if(!StringUtils.hasLength(phone)){
@@ -51,7 +54,7 @@ public class ParseMessage {
      * @param commentDetail 信息
      * @return
      */
-    public static Comment parseComment(Map<String,String> commentDetail){
+    public static Comment ToComment(Map<String,String> commentDetail){
         Assert.notNull(commentDetail,"comment map is null");
         Comment comment = new Comment();
         comment.setLikes(0);
@@ -73,7 +76,7 @@ public class ParseMessage {
      * @param typeNo
      * @return
      */
-    public static Comment parseComment(Integer typeNo){
+    public static Comment ToComment(Integer typeNo){
         Comment comment = new Comment();
         if(typeNo < 0 || typeNo > 10){
             return null;

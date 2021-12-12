@@ -1,8 +1,11 @@
 package com.qzlnode.epidemic.miniprogram.util;
 
+import com.qzlnode.epidemic.miniprogram.pojo.Comment;
+import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -10,7 +13,17 @@ import java.util.List;
  */
 public class ReturnValueHandler {
 
-    public static List<String> handlerCRvalue(String[] values){
+    public static List handlerReturnValue(String[] values,Class object){
+        if(object == Province.class){
+            return handlerPRValue(values);
+        }
+        if(object == Comment.class){
+            return handlerCRvalue(values);
+        }
+        return null;
+    }
+
+    private static List<String> handlerCRvalue(String[] values){
         int length = values.length;
         List<String> list = new ArrayList<>();
         for(int i = 0 ; i < length ; i++){
@@ -26,4 +39,15 @@ public class ReturnValueHandler {
         Assert.notEmpty(list,"list is null");
         return list;
     }
+
+    private static List<Province> handlerPRValue(String[] values){
+        int length = values.length;
+        List<Province> allData = new ArrayList<>();
+        for(int i = 0 ; i < length ; i++){
+            Province province = JsonUtil.JsonToProvince(values[i]);
+            if(province != null) allData.add(province);
+        }
+        return allData;
+    }
+
 }

@@ -51,8 +51,8 @@ public class CommentServiceImpl implements CommentService {
         String[] res = redis.get(comment);
         if(res != null){
             logger.info("get the comments in redis");
-            List<String> list = ReturnValueHandler.handlerCRvalue(res);
-            return list;
+            List<String> userComments = ReturnValueHandler.handlerReturnValue(res,Comment.class);
+            return userComments;
         }
         List<Comment> comments = commentDao.findComment(comment);
         if(comments.size() == 0){
@@ -63,7 +63,7 @@ public class CommentServiceImpl implements CommentService {
             redis.set(tmp);
         }
         logger.info("set comment to redis,type no : {}",comment.getTypeNo());
-        res = redis.get(comment);
-        return ReturnValueHandler.handlerCRvalue(res);
+        res = comments.toArray(new String[comments.size()]);
+        return ReturnValueHandler.handlerReturnValue(res,Comment.class);
     }
 }

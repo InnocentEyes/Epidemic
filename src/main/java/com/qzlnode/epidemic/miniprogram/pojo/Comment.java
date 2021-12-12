@@ -7,7 +7,7 @@ import java.util.Date;
  * @author qzlzzz
  */
 public class Comment {
-
+    
     private Integer commentId;
 
     private Integer userId;
