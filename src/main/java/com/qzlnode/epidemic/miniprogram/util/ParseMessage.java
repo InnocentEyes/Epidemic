@@ -41,11 +41,6 @@ public class ParseMessage {
             throw new IllegalArgumentException("user password is null");
         }
         user.setUserPassword(password);
-        String userName = tree.get("name").asText();
-        if(userName == null){
-            userName = phone;
-        }
-        user.setUserName(userName);
         return user;
     }
 

@@ -39,18 +39,20 @@ public class IndexServiceImpl implements IndexService {
     public User LoginService(User user) {
         Assert.notNull(user,"user in login service is null");
         user.setUserPassword(BASE64.encode(user.getUserPassword()));
-        Integer userId = Integer.parseInt(redisForUser.get(user)[0]);
-        if(userId != null){
+        String[] userData = redisForUser.get(user);
+        Integer userId = -1;
+        if(userData != null) {
+            userId = Integer.parseInt(userData[0]);
             user.setId(userId);
             return user;
         }
         userId = userDao.findUser(user);
-        if(userId != null){
+        if(userId != null && userId != -1){
             user.setId(userId);
             redisForUser.set(user);
             return user;
         }
-        return null;
+        return user;
     }
 
     /**
@@ -61,7 +63,12 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public boolean registerService(User user) {
         Assert.notNull(user,"register service : user is null");
-        user.setUserPassword(BASE64.encode(user.getUserPassword()));
+        String password = BASE64.encode(user.getUserPassword());
+        if(password.length() > 30){
+            logger.info("user phoneNumber: {} password too longer",user.getUserPhoneNumber());
+            return false;
+        }
+        user.setUserPassword(password);
         if(StringUtils.hasLength(redisForUser.get(user)[0])){
             return false;//已经登录
         }

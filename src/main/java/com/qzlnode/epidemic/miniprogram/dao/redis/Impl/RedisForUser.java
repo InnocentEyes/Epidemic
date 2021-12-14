@@ -46,6 +46,9 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
         }catch (Exception e){
             logger.error("get the user{} id error",new Object[]{user.getId()});
         }
+        if(userId == null){
+            return null;
+        }
         return new String[]{userId};
     }
 
@@ -61,13 +64,13 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
         HashOperations<String, Object, Object> operation = getOperation();
         Map<String,Object> userMessage = new HashMap<>();
         String key = "user_phone :"+user.getUserPhoneNumber();
-        userMessage.put("id",user.getId());
+        userMessage.put("id",user.getId().toString());
         userMessage.put("password",user.getUserPassword());
         try {
             operation.putAll(key, userMessage);
             redis.expireAt(key,new Date(System.currentTimeMillis() + 1000*60*30));
         }catch (Exception e){
-            logger.error("put the user named"+user.getUserName()+"message to redis error");
+            logger.error("put the user named "+user.getUserName()+" message to redis error \n {}",e.getMessage());
             return;
         }
         logger.info("put the user named"+user.getUserName()+"message to redis acc");

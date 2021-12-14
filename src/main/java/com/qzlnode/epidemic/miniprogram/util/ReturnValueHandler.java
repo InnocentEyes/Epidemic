@@ -5,7 +5,6 @@ import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,11 +27,11 @@ public class ReturnValueHandler {
         List<String> list = new ArrayList<>();
         for(int i = 0 ; i < length ; i++){
             String[] tmp = values[i].split("/");
-            list.add(i + "{" +
-                            "userId=" + tmp[0] +
-                            ", userName='" + tmp[1] + "\'" +
-                            ", time='" + tmp[2] + "\'" +
-                            ", comment=" + tmp[3] +
+            list.add(   "{" +
+                            "\"userId\"=" + tmp[0] +
+                            ", \"userName\"=\"" + tmp[1] + "\"" +
+                            ", \"time\"=\"" + tmp[2] + "\"" +
+                            ", \"comment\"=\"" + tmp[3] + "\"" +
                             '}'
                     );
         }

@@ -13,6 +13,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.security.Key;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +62,7 @@ public class RedisForMain implements CommonRedis<Province>, Operations<ListOpera
         ListOperations<String, String> operation = getOperation();
         try {
             operation.rightPush(KEY,json);
+            redis.expireAt(KEY,new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));
         }catch (Exception e){
             logger.info("send data to redis error");
         }
