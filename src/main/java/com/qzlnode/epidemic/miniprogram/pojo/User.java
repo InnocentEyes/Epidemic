@@ -44,10 +44,10 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userPhoneNumber='" + userPhoneNumber + '\'' +
-                ", userName='" + userName + '\'' +
+        return "{" +
+                "\"id\":" + id +
+                ", \"userPhoneNumber\":\"" + userPhoneNumber + '\"' +
+                ", \"userName\":\"" + userName + '\"' +
                 '}';
     }
 }

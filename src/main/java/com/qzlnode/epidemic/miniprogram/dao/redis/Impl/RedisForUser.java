@@ -40,16 +40,18 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
     public String[] get(User user){
         HashOperations<String, Object, Object> operation = getOperation();
         String key = "user_phone :"+user.getUserPhoneNumber();
-        String userId = null;
+        String userId = "";
+        String userPassword = "";
         try {
             userId = (String)operation.get(key, "id");
+            userPassword = (String) operation.get(key,"password");
         }catch (Exception e){
             logger.error("get the user{} id error",new Object[]{user.getId()});
         }
         if(userId == null){
             return null;
         }
-        return new String[]{userId};
+        return new String[]{userId,userPassword};
     }
 
     /**

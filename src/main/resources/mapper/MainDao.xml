@@ -3,6 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qzlnode.epidemic.miniprogram.dao.mysql.MainDao">
+  <!--等待数据库表更新后可优化-->
+  <update id="changeAll">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update province
+      <set>
+        `detail_data` = #{item}
+      </set>
+      where id = #{index}
+    </foreach>
+  </update>
 
   <select id="findAll" resultType="java.lang.String">
     select `detail_data` from province;

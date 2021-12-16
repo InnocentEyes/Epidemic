@@ -9,6 +9,7 @@ import com.qzlnode.epidemic.miniprogram.util.ReturnValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -36,7 +37,7 @@ public class MainServiceImpl implements MainService {
     public List<Province> getAllData() {
         String[] data = redis.get(null);
         if(data != null){
-            logger.info("get the epidemic data on redis on {}",new Date());
+            logger.info("get the epidemic data on redis at {}",new Date());
             return ReturnValueHandler.handlerReturnValue(data, Province.class);
         }
         List<String> allData = mainDao.findAll();

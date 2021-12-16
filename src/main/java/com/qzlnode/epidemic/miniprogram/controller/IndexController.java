@@ -1,6 +1,7 @@
 package com.qzlnode.epidemic.miniprogram.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.qzlnode.epidemic.miniprogram.pojo.Result;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
 import com.qzlnode.epidemic.miniprogram.service.IndexService;
 import com.qzlnode.epidemic.miniprogram.util.ParseMessage;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;

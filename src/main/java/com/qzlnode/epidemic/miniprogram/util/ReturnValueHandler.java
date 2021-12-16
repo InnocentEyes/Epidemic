@@ -28,10 +28,10 @@ public class ReturnValueHandler {
         for(int i = 0 ; i < length ; i++){
             String[] tmp = values[i].split("/");
             list.add(   "{" +
-                            "\"userId\"=" + tmp[0] +
-                            ", \"userName\"=\"" + tmp[1] + "\"" +
-                            ", \"time\"=\"" + tmp[2] + "\"" +
-                            ", \"comment\"=\"" + tmp[3] + "\"" +
+                            "\"userId\":" + tmp[0] +
+                            ", \"userName\":\"" + tmp[1] + "\"" +
+                            ", \"time\":\"" + tmp[2] + "\"" +
+                            ", \"comment\":\"" + tmp[3] + "\"" +
                             '}'
                     );
         }

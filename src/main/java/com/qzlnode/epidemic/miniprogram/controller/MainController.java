@@ -9,9 +9,11 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,8 +27,10 @@ public class MainController {
     @Autowired
     private MainService mainService;
 
+    @Scheduled(fixedRate = 1000 * 60 * 60 * 24)
     @RequestMapping(value = "/all",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Province>> getAllData(){
+        logger.info("get the data info at {}",new Date());
         return new ResponseEntity<>(mainService.getAllData(), HttpStatus.ACCEPTED);
     }
 

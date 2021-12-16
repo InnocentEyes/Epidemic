@@ -12,7 +12,13 @@ public interface MainDao {
 
     /**
      *
-     * @return
+     * @return epidemicData
      */
     List<String> findAll();
+
+    /**
+     *
+     * @return {@code false} or {@code true}
+     */
+    boolean changeAll(List<String> epidemicData);
 }
