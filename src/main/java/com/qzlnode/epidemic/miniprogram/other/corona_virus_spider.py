@@ -101,13 +101,13 @@ class CoronaVirusSpider(object):
         采集从2020年1月23日以来各国疫情数据
         """
         # 1. 加载各国疫情数据
-        last_day_corona_virus_of_world = self.load('C:/log/data_log/last_day_corona_virus_of_world.json')
+        last_day_corona_virus_of_world = self.load('./last_day_corona_virus_of_world.json')
         # print(last_day_corona_virus_of_world)
         # 2. 解析各国疫情数据URL，获取每日疫情数据
         corona_virus_of_world = self.parse_corona_virus(last_day_corona_virus_of_world,
                                                         desc='采集1月23日以来各国疫情数据')
         # 3. 把列表以json格式保存为文件
-        self.save(corona_virus_of_world, 'C:/log/data_log/corona_virus_of_world.json')
+        self.save(corona_virus_of_world, './corona_virus_of_world.json')
 
     def crawl_last_day_corona_virus_of_china(self):
         """
@@ -118,21 +118,21 @@ class CoronaVirusSpider(object):
         # 2. 解析疫情首页，获取最近一日各省疫情数据
         last_day_corona_virus_of_china = self.parse_home_page(home_page, tag_id="getAreaStat")
         # 3. 保存各省疫情数据
-        self.save(last_day_corona_virus_of_china, 'C:/log/data_log/last_day_corona_virus_of_china.json')
+        self.save(last_day_corona_virus_of_china, './last_day_corona_virus_of_china.json')
 
     def crawl_corona_virus_of_china(self):
         """
         采集从2020年1月22日以来各省疫情数据
         """
         # 1. 加载各省疫情数据
-        last_day_corona_virus_of_china = self.load('C:/log/data_log/last_day_corona_virus_of_china.json')
+        last_day_corona_virus_of_china = self.load('./last_day_corona_virus_of_china.json')
         #C:/log/data_log/last_day_corona_virus_of_china.json
         # print(last_day_corona_virus_of_china)
         # 2. 解析各省疫情数据URL，获取每日疫情数据
         corona_virus_of_china = self.parse_corona_virus(last_day_corona_virus_of_china,
                                                         desc='采集1月22日以来各省疫情数据')
         # 3. 把列表以json格式保存为文件
-        self.save(corona_virus_of_china, 'C:/log/data_log/corona_virus_of_china.json')
+        self.save(corona_virus_of_china, './corona_virus_of_china.json')
     #     C:/log/data_log/corona_virus_of_china.json
 
     def run(self):

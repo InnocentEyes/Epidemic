@@ -28,15 +28,13 @@ public class ChangeData {
     private ObjectMapper mapper = new ObjectMapper();
 
     //文件位置
-    private static final String FILE_PATH = "C:\\log\\data_log\\last_day_corona_virus_of_china.json";
+    private static final String FILE_PATH = "./last_day_corona_virus_of_china.json";
 
     @Autowired
     private MainDao mainDao;
 
-    @Autowired
-    private RedisForMain redis;
 
-    @Scheduled(fixedRate = 1000 * 60 * 60 * 24)
+    @Scheduled(fixedRate = 1000 * 60 * 60 * 23)
     public void dataChange(){
         try {
             Runtime.getRuntime().exec("python ./corona_virus_spider.py");
@@ -44,7 +42,6 @@ public class ChangeData {
             Province[] provinces = mapper.readValue(in.readAll(), Province[].class);
             List<String> list = new ArrayList<>();
             for (Province province : provinces) {
-                redis.set(province);
                 list.add(JsonUtil.ProvinceToJson(province));
             }
             if(list.size() <= 0){
