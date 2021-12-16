@@ -8,6 +8,7 @@
 在/com/qzlnode/epidemic/miniprogram/other包中的[corona_virus_spider.py](https://github.com/InnocentEyes/Epidemic/blob/master/src/main/java/com/qzlnode/epidemic/miniprogram/other/corona_virus_spider.py) 便是获取疫情数据的脚本文件。
 
 同时，在application.yaml中可以自己配置日志文件的位置:
+
 ![img_1.png](img_1.png)
 
 环境是jdk1.8、mysql的版本是8.0.24,如果当前主机mysql的版本号与这里的版本号不一致的话，可以到[pom.xml](pom.xml)文件中修改*mysql-connector-java*中的版本号,
