@@ -62,6 +62,7 @@ public class IndexServiceImpl implements IndexService {
      * @param user
      * @return
      */
+    @Transactional
     @Override
     public boolean registerService(User user) {
         Assert.notNull(user,"register service : user is null");
@@ -71,12 +72,13 @@ public class IndexServiceImpl implements IndexService {
             return false;
         }
         user.setUserPassword(password);
-        if(StringUtils.hasLength(redisForUser.get(user)[0])){
+        String[] userMessage = redisForUser.get(user);
+        if(userMessage != null){
             return false;//已经登录
         }
         boolean target = userDao.registerUser(user);
         if(target){
-            logger.info("user phoned :"+user.getUserPhoneNumber()+"register");
+            logger.info("user phoned : "+user.getUserPhoneNumber()+" register");
         }
         return target;
     }

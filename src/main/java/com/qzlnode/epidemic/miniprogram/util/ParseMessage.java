@@ -25,22 +25,21 @@ public class ParseMessage {
     public static User ToUser(String userMessage) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode tree = null;
+        User user = new User();
         try {
             tree = mapper.readTree(userMessage);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        User user = new User();
-        String phone = tree.get("phone").asText();
-        if(!StringUtils.hasLength(phone)){
-            throw new IllegalArgumentException("user phone is null");
+        if(!tree.hasNonNull("phone") || !tree.hasNonNull("password")){
+            throw new NullPointerException("user message must contain phone and password");
         }
-        user.setUserPhoneNumber(phone);
-        String password = tree.get("password").asText();
-        if(!StringUtils.hasLength(password)){
-            throw new IllegalArgumentException("user password is null");
+        user.setUserPhoneNumber(tree.get("phone").asText());
+        user.setUserPassword(tree.get("password").asText());
+        if(tree.hasNonNull("name")){
+            user.setUserName(tree.get("name").asText());
+            return user;
         }
-        user.setUserPassword(password);
         return user;
     }
 

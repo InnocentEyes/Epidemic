@@ -34,7 +34,7 @@ public class CommentController {
      * @param commentDetail
      * @return
      */
-    @PostMapping(value = "/send",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/mobile/send",produces = MediaType.APPLICATION_JSON_VALUE)
     public HttpStatus sendComment(@RequestParam Map<String,String> commentDetail){
         Comment comment = ParseMessage.ToComment(commentDetail);
         if(comment == null){
@@ -54,8 +54,11 @@ public class CommentController {
      * @param typeId
      * @return
      */
-    @GetMapping(value = "/getInfo",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getComments(@RequestParam(value = "typeId",required = true) Integer typeId){
+    @GetMapping(value = "/mobile/comment/getInfo",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<String>> getComments(@RequestParam(value = "typeId",required = false) Integer typeId){
+        if(typeId == null){
+            throw new NullPointerException("must contain typeId");
+        }
         Comment comment = ParseMessage.ToComment(typeId);
         if(comment == null){
             logger.info("system send the typeId to lager");
