@@ -1,9 +1,14 @@
 package com.qzlnode.epidemic.miniprogram.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
+import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
+import com.qzlnode.epidemic.miniprogram.pojo.Result;
 import com.qzlnode.epidemic.miniprogram.service.CommentService;
+import com.qzlnode.epidemic.miniprogram.service.CommentTypeService;
 import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import com.qzlnode.epidemic.miniprogram.util.ParseMessage;
+import com.qzlnode.epidemic.miniprogram.util.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -29,24 +35,27 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private CommentTypeService commentTypeService;
+
     /**
      *
      * @param commentDetail
      * @return
      */
     @PostMapping(value = "/mobile/send",produces = MediaType.APPLICATION_JSON_VALUE)
-    public HttpStatus sendComment(@RequestParam Map<String,String> commentDetail){
+    public String sendComment(@RequestParam Map<String,String> commentDetail){
         Comment comment = ParseMessage.ToComment(commentDetail);
         if(comment == null){
             logger.info("user "+MessageHolder.getUserId()+"send null comment or system send null typeNo");
-            return HttpStatus.BAD_REQUEST;
+            return Status.UNSUCCESSFUL.getReasonPhrase();
         }
         boolean target = commentService.sendComment(comment);
         MessageHolder.clearData();
         if(target){
-            return HttpStatus.OK;
+            return Status.SUCCESSFUL.getReasonPhrase();
         }
-        return HttpStatus.NOT_ACCEPTABLE;
+        return Status.UNSUCCESSFUL.getReasonPhrase();
     }
 
     /**
@@ -68,6 +77,23 @@ public class CommentController {
         MessageHolder.clearData();
         if(commentsByNo == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(commentsByNo,HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/mobile/types",produces = MediaType.APPLICATION_JSON_VALUE)
+    public Result<CommentType> getTypes(@RequestParam(value = "count",required = false) Integer pn){
+        if(pn < 1){
+            logger.error("the page count is smaller than one, record at {}",new Date());
+            return new Result<>(Status.UNSUCCESSFUL,null);
+        }
+        Page<CommentType> typePage = new Page<>(pn, 5);
+        Page<CommentType> page = commentTypeService.page(typePage, null);
+        List<CommentType> records = page.getRecords();
+        if( records == null ||  records.size() == 0){
+            logger.error("there is no records in mysql");
+            return new Result<>(Status.UNSUCCESSFUL,null);
+        }
+        logger.info("get the message : {} acc",records);
+        return new Result<>(Status.SUCCESSFUL,page.getRecords());
     }
 
 }

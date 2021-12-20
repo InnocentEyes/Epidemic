@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
+import re
 import requests
 from bs4 import BeautifulSoup
-import re
-import json
 from tqdm import tqdm
+
 
 class CoronaVirusSpider(object):
     def __init__(self):
@@ -94,7 +95,7 @@ class CoronaVirusSpider(object):
         # 2. 解析首页内容，获取最近一日各国疫情数据
         last_day_corona_virus_of_world = self.parse_home_page(home_page, tag_id="getListByCountryTypeService2true")
         # 3. 保存数据
-        self.save(last_day_corona_virus_of_world, 'C:/log/data_log/last_day_corona_virus_of_world.json')
+        self.save(last_day_corona_virus_of_world, './last_day_corona_virus_of_world.json')
 
     def crawl_corona_virus_of_world(self):
         """

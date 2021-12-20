@@ -9,6 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+
 //@SpringBootTest
 class EpidemicApplicationTests {
 
@@ -23,12 +28,27 @@ class EpidemicApplicationTests {
 		try {
 			Province[] provinces = mapper.readValue(s, Province[].class);
 			for (Province province : provinces) {
-				System.out.println(province.toString());
+				System.out.println(mapper.writeValueAsString(province));
 			}
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
 	}
+
+	@Test
+	void test1(){
+		URL resource = this.getClass().getResource("");
+		assert resource != null;
+		String url = "";
+		try {
+			url = URLDecoder.decode(resource.getPath(),"utf-8");
+			url = url.substring(1,url.indexOf("Epidemic")+"Epidemic".length());
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		System.out.println(url);
+	}
+
 
 }

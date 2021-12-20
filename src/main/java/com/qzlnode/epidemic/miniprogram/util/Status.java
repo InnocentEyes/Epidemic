@@ -5,9 +5,9 @@ package com.qzlnode.epidemic.miniprogram.util;
  */
 public enum Status {
 
-    UNSUCCESSFUL(302,"{\"code\": 302, \"message\": \"operation successful\"}"),
+    UNSUCCESSFUL(302,"{\"code\": 302, \"message\": \"operation unsuccessful\"}"),
 
-    SUCCESSFUL(200,"{\"code\": 200, \"message\": \"operation unsuccessful\"}");
+    SUCCESSFUL(200,"{\"code\": 200, \"message\": \"operation successful\"}");
 
     private final int value;
 

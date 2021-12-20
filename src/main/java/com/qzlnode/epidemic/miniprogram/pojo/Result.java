@@ -12,10 +12,30 @@ public class Result<T> {
 
     private Status status;
 
-    private Set<T> result;
+    private List<T> result;
 
-    public Result(Status status, Set<T> result){
+    public Result(Status status, List<T> result){
         this.status = status;
+        this.result = result;
+    }
+
+    public Result(Status status) {
+        this.status = status;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public List<T> getResult() {
+        return result;
+    }
+
+    public void setResult(List<T> result) {
         this.result = result;
     }
 

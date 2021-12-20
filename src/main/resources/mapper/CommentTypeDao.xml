@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qzlnode.epidemic.miniprogram.dao.mysql.CommentTypeDao">
+
+  <resultMap id="comment_type_sql" type="com.qzlnode.epidemic.miniprogram.pojo.CommentType">
+    <id column="id" property="id"/>
+    <id column="type_no" property="typeNo"/>
+    <id column="type_name" property="typeName"/>
+  </resultMap>
+
+  <select id="findAllType" resultMap="comment_type_sql">
+    select `type_no`,`type_name` from comment_type
+  </select>
+</mapper>

@@ -13,10 +13,10 @@ import java.util.List;
 public class ReturnValueHandler {
 
     public static List handlerReturnValue(String[] values,Class object){
-        if(object == Province.class){
+        if(object.isAssignableFrom(Province.class)){
             return handlerPRValue(values);
         }
-        if(object == Comment.class){
+        if(object.isAssignableFrom(Comment.class)){
             return handlerCRvalue(values);
         }
         return null;
