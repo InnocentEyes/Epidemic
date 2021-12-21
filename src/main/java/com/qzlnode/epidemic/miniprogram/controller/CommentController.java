@@ -96,4 +96,9 @@ public class CommentController {
         return new Result<>(Status.SUCCESSFUL,page.getRecords());
     }
 
+    @GetMapping(value = "/mobile/likes",produces = MediaType.APPLICATION_JSON_VALUE)
+    public String sendLikes(){
+
+        return Status.SUCCESSFUL.getReasonPhrase();
+    }
 }

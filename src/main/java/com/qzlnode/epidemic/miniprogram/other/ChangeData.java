@@ -8,8 +8,10 @@ import com.qzlnode.epidemic.miniprogram.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,16 +60,18 @@ public class ChangeData {
     /**
      *
      */
-    @Scheduled(fixedRate = 1000 * 60 * 60 * 23)
+    @Transactional
+    @Scheduled(fixedDelay = 1000 * 60 * 60)
     public void dataChange(){
         try {
             Process exec = Runtime.getRuntime().exec("python ./corona_virus_spider.py");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(exec.getInputStream(),CHARSET));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(exec.getErrorStream(),CHARSET));
             String line = null;
             while((line = bufferedReader.readLine()) != null){
                 System.out.println(line);
             }
             bufferedReader.close();
+
             if(exec.exitValue() != 0) {
                 logger.error("run the py file error !");
                 return;

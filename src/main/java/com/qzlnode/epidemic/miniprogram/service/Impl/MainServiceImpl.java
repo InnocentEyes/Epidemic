@@ -46,7 +46,7 @@ public class MainServiceImpl implements MainService {
             Province province = JsonUtil.JsonToProvince(datum);
             redis.set(province);
         }
-        logger.info("get the epidemic data on mysql at {}",new Date());
+        logger.info("get the epidemic data on mysql and put the epidemic to redis at {}",new Date());
         return ReturnValueHandler.handlerReturnValue(data,Province.class);
     }
 }

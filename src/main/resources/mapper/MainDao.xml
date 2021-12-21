@@ -10,7 +10,7 @@
       <set>
         `detail_data` = #{item}
       </set>
-      where id = #{index}
+      where id = #{index} + 1
     </foreach>
   </update>
 
