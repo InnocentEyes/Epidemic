@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
 import org.apache.ibatis.annotations.Mapper;
 
-
+/**
+ * @author qzlzzz
+ */
 @Mapper
 public interface CommentTypeDao extends BaseMapper<CommentType> {
 

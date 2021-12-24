@@ -10,8 +10,8 @@ import java.util.Base64;
  */
 public class BASE64 {
 
-    private final static Base64.Encoder encoder = Base64.getEncoder();
-    private final static Base64.Decoder decoder = Base64.getDecoder();
+    private final static Base64.Encoder ENCODER = Base64.getEncoder();
+    private final static Base64.Decoder DECODER = Base64.getDecoder();
 
     /**
      * 给字符串加密
@@ -25,7 +25,7 @@ public class BASE64 {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String encodedPassword = encoder.encodeToString(textByte);
+        String encodedPassword = ENCODER.encodeToString(textByte);
         return encodedPassword;
     }
 
@@ -37,7 +37,7 @@ public class BASE64 {
     public static String decode(String encodedPassword) {
         String password = null;
         try {
-            password = new String(decoder.decode(encodedPassword), "UTF-8");
+            password = new String(DECODER.decode(encodedPassword), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

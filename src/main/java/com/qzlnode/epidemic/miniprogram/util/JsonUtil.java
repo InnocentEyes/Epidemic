@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -32,7 +31,7 @@ public class JsonUtil {
      * @param json
      * @return
      */
-    public static Province JsonToProvince(String json){
+    public static Province jsonToProvince(String json){
         Assert.hasLength(json,"json must no null");
         try {
             return MAPPER.readValue(json, Province.class);
@@ -47,7 +46,7 @@ public class JsonUtil {
      * @param province
      * @return
      */
-    public static String ProvinceToJson(Province province){
+    public static String provinceToJson(Province province){
         try {
             return MAPPER.writeValueAsString(province);
         } catch (JsonProcessingException e) {
@@ -56,7 +55,7 @@ public class JsonUtil {
         return null;
     }
 
-    public static String ProvinceToJson(List<Province> provinces){
+    public static String provinceToJson(List<Province> provinces){
         try {
             return MAPPER.writeValueAsString(provinces);
         } catch (JsonProcessingException e) {
@@ -70,7 +69,7 @@ public class JsonUtil {
      * @param json
      * @return
      */
-    public static CommentType JsonToType(String json){
+    public static CommentType jsonToType(String json){
         Assert.hasLength(json,"json must no null");
         try {
             return MAPPER.readValue(json,CommentType.class);
@@ -80,7 +79,7 @@ public class JsonUtil {
         return null;
     }
 
-    public static String TypeToJson(CommentType commentType){
+    public static String typeToJson(CommentType commentType){
         try {
             return MAPPER.writeValueAsString(commentType);
         } catch (JsonProcessingException e) {
@@ -89,7 +88,7 @@ public class JsonUtil {
         return null;
     }
 
-    public static String TypeToJson(List<CommentType> commentTypeList){
+    public static String typeToJson(List<CommentType> commentTypeList){
         try {
             return MAPPER.writeValueAsString(commentTypeList);
         } catch (JsonProcessingException e) {
@@ -103,7 +102,7 @@ public class JsonUtil {
      * @param json
      * @return
      */
-    public static City JsonToCity(String json){
+    public static City jsonToCity(String json){
         Assert.hasLength(json,"json must no null");
         try {
             return MAPPER.readValue(json,City.class);
@@ -118,7 +117,7 @@ public class JsonUtil {
      * @param city
      * @return
      */
-    public static String CityToJson(City city){
+    public static String cityToJson(City city){
         try {
             return MAPPER.writeValueAsString(city);
         } catch (JsonProcessingException e) {
@@ -127,7 +126,7 @@ public class JsonUtil {
         return null;
     }
 
-    public static String CityToJson(List<City> cities){
+    public static String cityToJson(List<City> cities){
         try {
             return MAPPER.writeValueAsString(cities);
         } catch (JsonProcessingException e) {

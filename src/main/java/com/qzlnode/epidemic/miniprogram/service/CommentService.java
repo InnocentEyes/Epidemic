@@ -11,14 +11,14 @@ import java.util.List;
 public interface CommentService {
 
     /**
-     *
+     * <h3>发送评论</h3>
      * @param comment
      * @return
      */
     boolean sendComment(Comment comment);
 
     /**
-     *
+     *  <h3>根据话题的种类获取讨论</h3>
      * @param comment
      * @return
      */

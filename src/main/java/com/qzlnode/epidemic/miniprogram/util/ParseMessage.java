@@ -16,6 +16,17 @@ import java.util.Map;
  * @author qzlzzz
  */
 public class ParseMessage {
+
+    private static final String USER_PASSWORD = "password";
+
+    private static final String USER_NAME = "name";
+
+    private static final String USER_PHONE = "phone";
+
+    private static final String USER_COMMENT = "comment";
+
+    private static final String COMMENT_TYPE_NO = "type_no";
+
     /**
      * 解析User信息
      * @param userMessage 信息
@@ -30,14 +41,15 @@ public class ParseMessage {
             tree = mapper.readTree(userMessage);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
+            return user;
         }
-        if(!tree.hasNonNull("phone") || !tree.hasNonNull("password")){
+        if(!tree.hasNonNull(USER_PHONE) || !tree.hasNonNull(USER_PASSWORD)){
             throw new NullPointerException("user message must contain phone and password");
         }
-        user.setUserPhoneNumber(tree.get("phone").asText());
-        user.setUserPassword(tree.get("password").asText());
-        if(tree.hasNonNull("name")){
-            user.setUserName(tree.get("name").asText());
+        user.setUserPhoneNumber(tree.get(USER_PHONE).asText());
+        user.setUserPassword(tree.get(USER_PASSWORD).asText());
+        if(tree.hasNonNull(USER_NAME)){
+            user.setUserName(tree.get(USER_NAME).asText());
             return user;
         }
         return user;
@@ -52,12 +64,12 @@ public class ParseMessage {
         Assert.notNull(commentDetail,"comment map is null");
         Comment comment = new Comment();
         comment.setLikes(0);
-        String userComment = commentDetail.get("comment");
+        String userComment = commentDetail.get(USER_COMMENT);
         if(!StringUtils.hasLength(userComment)){
             return null;
         }
         comment.setComment(userComment);
-        Integer commentTypeNo = Integer.parseInt(commentDetail.get("type_no"));
+        Integer commentTypeNo = Integer.parseInt(commentDetail.get(COMMENT_TYPE_NO));
         if(commentTypeNo == null){
             return null;
         }
@@ -72,7 +84,7 @@ public class ParseMessage {
      */
     public static Comment ToComment(Integer typeNo){
         Comment comment = new Comment();
-        if(typeNo < 0 || typeNo > 10){
+        if(typeNo < 0){
             return null;
         }
         comment.setTypeNo(typeNo);

@@ -43,7 +43,7 @@ public class ReturnValueHandler {
         int length = values.length;
         List<Province> allData = new ArrayList<>();
         for(int i = 0 ; i < length ; i++){
-            Province province = JsonUtil.JsonToProvince(values[i]);
+            Province province = JsonUtil.jsonToProvince(values[i]);
             if(province != null) allData.add(province);
         }
         return allData;

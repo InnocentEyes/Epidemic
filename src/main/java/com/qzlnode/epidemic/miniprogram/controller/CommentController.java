@@ -15,11 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +28,10 @@ import java.util.Map;
 @RestController
 public class CommentController {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());//日志
+    /**
+     *
+     */
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private CommentService commentService;
@@ -48,6 +49,7 @@ public class CommentController {
         Comment comment = ParseMessage.ToComment(commentDetail);
         if(comment == null){
             logger.info("user "+MessageHolder.getUserId()+"send null comment or system send null typeNo");
+            MessageHolder.clearData();
             return Status.UNSUCCESSFUL.getReasonPhrase();
         }
         boolean target = commentService.sendComment(comment);
@@ -75,7 +77,9 @@ public class CommentController {
         }
         List<String> commentsByNo = commentService.getCommentsByNo(comment);
         MessageHolder.clearData();
-        if(commentsByNo == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if(commentsByNo == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(commentsByNo,HttpStatus.OK);
     }
 
@@ -85,6 +89,7 @@ public class CommentController {
             logger.error("the page count is smaller than one, record at {}",new Date());
             return new Result<>(Status.UNSUCCESSFUL,null);
         }
+        MessageHolder.clearData();
         Page<CommentType> typePage = new Page<>(pn, 5);
         Page<CommentType> page = commentTypeService.page(typePage, null);
         List<CommentType> records = page.getRecords();
@@ -98,7 +103,15 @@ public class CommentController {
 
     @GetMapping(value = "/mobile/likes",produces = MediaType.APPLICATION_JSON_VALUE)
     public String sendLikes(){
-
+        MessageHolder.clearData();
         return Status.SUCCESSFUL.getReasonPhrase();
+    }
+
+    @ResponseStatus(code = HttpStatus.FORBIDDEN,reason = "TypeId must not be empty")
+    @ExceptionHandler(NullPointerException.class)
+    public void handlerError(HttpServletRequest request,Exception ex){
+        MessageHolder.clearData();
+        logger.error("handler the "+request.getRequestURI()+" error, \n" +
+                "because"+ex.getMessage());
     }
 }

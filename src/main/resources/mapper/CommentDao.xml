@@ -15,7 +15,7 @@
 
   <insert id="addComment">
     <if test="userId != null and typeNo != null">
-      insert into(`user_id`,`type_no`,`likes`,`desc`) values (#{userId},#{typeNo},#{likes},#{comment})
+      insert into comment(`user_id`,`type_no`,`likes`,`desc`) values (#{userId},#{typeNo},#{likes},#{comment})
     </if>
   </insert>
 

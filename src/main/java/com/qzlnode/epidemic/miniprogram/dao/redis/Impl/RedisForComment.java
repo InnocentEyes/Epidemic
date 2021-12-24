@@ -23,7 +23,9 @@ import java.util.concurrent.locks.LockSupport;
 @Component
 public class RedisForComment implements CommonRedis<Comment>,Operations<ZSetOperations<String, String>>{
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final String OPERATION = "operation";
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private Map<String,ZSetOperations<String, String>> map = new HashMap<>();
 
@@ -80,11 +82,11 @@ public class RedisForComment implements CommonRedis<Comment>,Operations<ZSetOper
             queue.add(Thread.currentThread());
             LockSupport.park();
         }
-        if(map.get("operation") == null){
-            map.put("operation",redis.opsForZSet());
+        if(map.get(OPERATION) == null){
+            map.put(OPERATION,redis.opsForZSet());
         }
         atomic.compareAndSet(1,0);
         LockSupport.unpark(queue.poll());
-        return map.get("operation");
+        return map.get(OPERATION);
     }
 }

@@ -1,7 +1,9 @@
 package com.qzlnode.epidemic.miniprogram.interceptor;
 
 import com.qzlnode.epidemic.miniprogram.util.Security;
+import com.qzlnode.epidemic.miniprogram.util.Status;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,7 +16,14 @@ import java.io.PrintWriter;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
-
+    /**
+     *
+     * @param request
+     * @param response
+     * @param handler
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader("token");
@@ -22,7 +31,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         if(!target){
             response.setContentType("application/json;charset=utf-8");
             PrintWriter writer = response.getWriter();
-            writer.write(HttpStatus.NOT_FOUND.toString());
+            writer.write(Status.UNSUCCESSFUL.getReasonPhrase());
             writer.flush();
             writer.close();
         }

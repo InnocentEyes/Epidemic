@@ -56,11 +56,11 @@ public class ResultConverter implements HttpMessageConverter<Result> {
         Object inner = result.getResult().get(0);
         String jsonData = result.getStatus().getReasonPhrase();
         if(inner instanceof CommentType){
-            jsonData = jsonData + "," +JsonUtil.TypeToJson((List<CommentType>) result.getResult());
+            jsonData = jsonData + "," +JsonUtil.typeToJson((List<CommentType>) result.getResult());
         }else if(inner instanceof City){
-            jsonData = jsonData + "," + JsonUtil.CityToJson((List<City>) result.getResult());
+            jsonData = jsonData + "," + JsonUtil.cityToJson((List<City>) result.getResult());
         }else if(inner instanceof Province){
-            jsonData = jsonData + "," + JsonUtil.ProvinceToJson((List<Province>) result.getResult());
+            jsonData = jsonData + "," + JsonUtil.provinceToJson((List<Province>) result.getResult());
         }
         body.write(jsonData.getBytes(StandardCharsets.UTF_8));
     }

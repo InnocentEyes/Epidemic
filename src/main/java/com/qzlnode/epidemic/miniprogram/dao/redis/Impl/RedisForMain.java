@@ -31,6 +31,8 @@ public class RedisForMain implements CommonRedis<Province>, Operations<ListOpera
 
     private Map<String,ListOperations<String, String>> map = new HashMap<>();
 
+    private static final String OPERATION = "operation";
+
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String KEY = "all";
@@ -47,7 +49,7 @@ public class RedisForMain implements CommonRedis<Province>, Operations<ListOpera
     public String[] get(Province object) {
         ListOperations<String, String> operation = getOperation();
         List<String> data = operation.range(KEY, 0, -1);
-        if(data.size() == 0){
+        if( data == null || data.size() == 0){
             return null;
         }
         return data.toArray(new String[data.size()]);
@@ -59,7 +61,7 @@ public class RedisForMain implements CommonRedis<Province>, Operations<ListOpera
      */
     @Override
     public void set(Province object) {
-        String json = JsonUtil.ProvinceToJson(object);
+        String json = JsonUtil.provinceToJson(object);
         ListOperations<String, String> operation = getOperation();
         try {
             operation.rightPush(KEY,json);
@@ -77,12 +79,12 @@ public class RedisForMain implements CommonRedis<Province>, Operations<ListOpera
     public ListOperations<String, String> getOperation() {
         lock.lock();
         try {
-            if (map.get("operation") == null) {
-                map.put("operation", redis.opsForList());
+            if (map.get(OPERATION) == null) {
+                map.put(OPERATION, redis.opsForList());
             }
         }finally {
             lock.unlock();
         }
-        return map.get("operation");
+        return map.get(OPERATION);
     }
 }

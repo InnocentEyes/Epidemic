@@ -13,10 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -45,7 +44,7 @@ public class IndexController {
         }
         logger.info("user message detail is {}",userMessage);
         User user = ParseMessage.ToUser(userMessage);
-        user = indexService.LoginService(user);
+        user = indexService.loginService(user);
         if(user.getId() != null) {
             logger.info("user login acc");
             String token = Security.getToken(user);
@@ -67,13 +66,30 @@ public class IndexController {
     public String register(@RequestBody(required = false) String userMessage){
         if(!StringUtils.hasLength(userMessage)){
             logger.error("register : user message is null");
-            return Status.UNSUCCESSFUL.getReasonPhrase();//没有用户信息
+            //没有用户信息
+            return Status.UNSUCCESSFUL.getReasonPhrase();
         }
         User user = ParseMessage.ToUser(userMessage);
         boolean target = indexService.registerService(user);
         if(!target){
-            return Status.UNSUCCESSFUL.getReasonPhrase();//已有账户或已经登录
+            //已有账户或已经登录
+            return Status.UNSUCCESSFUL.getReasonPhrase();
         }
-        return Status.SUCCESSFUL.getReasonPhrase();//登录成功
+        //登录成功
+        return Status.SUCCESSFUL.getReasonPhrase();
     }
+
+    /**
+     *
+     * @param request
+     * @param ex
+     * @return
+     */
+    @ResponseStatus(value = HttpStatus.FORBIDDEN,reason = "user info is missing !")
+    @ExceptionHandler(NullPointerException.class)
+    public String handlerError(HttpServletRequest request,NullPointerException ex){
+        logger.error("parseUser error, the detail is :"+ex.getMessage());
+        return Status.UNSUCCESSFUL.getReasonPhrase();
+    }
+
 }

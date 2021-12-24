@@ -10,10 +10,14 @@ import javax.servlet.http.HttpSession;
  */
 public class MessageHolder {
 
-    //session id,线程本地变量
-    private static final ThreadLocal<String> sidLocal = new ThreadLocal<>();
-    //用户信息,线程本地变量
-    private static final ThreadLocal<User> userLocal = new ThreadLocal<>();
+    /**
+     * sessionId,线程本地变量
+     */
+    private static final ThreadLocal<String> SID_THREAD_LOCAL= new ThreadLocal<>();
+    /**
+     *   用户信息,线程本地变量
+     */
+    private static final ThreadLocal<User> USER_THREAD_LOCAL = new ThreadLocal<>();
 
 
 
@@ -22,7 +26,7 @@ public class MessageHolder {
      * @return
      */
     public static User getUser(){
-        User user = userLocal.get();
+        User user = USER_THREAD_LOCAL.get();
         Assert.notNull(user,"user未设置");
         return  user;
     }
@@ -32,7 +36,7 @@ public class MessageHolder {
      * @param user
      */
     public static void setUser(User user){
-        userLocal.set(user);
+        USER_THREAD_LOCAL.set(user);
     }
 
 
@@ -40,8 +44,8 @@ public class MessageHolder {
      * 清楚线程局部变量,防止内存泄漏
      */
     public static void clearData(){
-        userLocal.remove();
-        sidLocal.remove();
+        USER_THREAD_LOCAL.remove();
+        SID_THREAD_LOCAL.remove();
     }
 
     /**
@@ -61,7 +65,7 @@ public class MessageHolder {
      * @return
      */
     public static String getSidId(){
-        return sidLocal.get();
+        return SID_THREAD_LOCAL.get();
     }
 
     /**
@@ -69,6 +73,6 @@ public class MessageHolder {
      * @param sidId
      */
     public static void setSidId(String sidId){
-        sidLocal.set(sidId);
+        SID_THREAD_LOCAL.set(sidId);
     }
 }

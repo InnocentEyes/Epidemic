@@ -4,6 +4,7 @@ import com.qzlnode.epidemic.miniprogram.dao.mysql.CommentDao;
 import com.qzlnode.epidemic.miniprogram.dao.redis.Impl.RedisForComment;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.service.CommentService;
+import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import com.qzlnode.epidemic.miniprogram.util.ReturnValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,13 +19,16 @@ import java.util.List;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());//日志
+    /**
+     *
+     */
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private RedisForComment redis;//
+    private RedisForComment redis;
 
     @Autowired
-    private CommentDao commentDao;//
+    private CommentDao commentDao;
 
     /**
      *
@@ -33,6 +37,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public boolean sendComment(Comment comment) {
+        comment.setUserId(MessageHolder.getUserId());
         if(commentDao.addComment(comment)){
             logger.info("system send comment to mysql acc");
             redis.set(comment);

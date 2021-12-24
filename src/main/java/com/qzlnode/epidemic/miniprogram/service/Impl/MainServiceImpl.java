@@ -21,7 +21,7 @@ import java.util.List;
 @Service
 public class MainServiceImpl implements MainService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private RedisForMain redis;
@@ -43,7 +43,7 @@ public class MainServiceImpl implements MainService {
         List<String> allData = mainDao.findAll();
         data = allData.toArray(new String[allData.size()]);
         for (String datum : data) {
-            Province province = JsonUtil.JsonToProvince(datum);
+            Province province = JsonUtil.jsonToProvince(datum);
             redis.set(province);
         }
         logger.info("get the epidemic data on mysql and put the epidemic to redis at {}",new Date());

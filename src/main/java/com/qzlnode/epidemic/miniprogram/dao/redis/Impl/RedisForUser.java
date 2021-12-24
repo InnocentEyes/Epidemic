@@ -3,7 +3,6 @@ package com.qzlnode.epidemic.miniprogram.dao.redis.Impl;
 import com.qzlnode.epidemic.miniprogram.dao.redis.CommonRedis;
 import com.qzlnode.epidemic.miniprogram.dao.redis.Operations;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
-import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,16 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
 
     private Map<String,HashOperations<String, Object, Object>> map = new HashMap<>();
 
-    private final ReentrantLock lock = new ReentrantLock();//独占锁,乐观锁。可设置为公平锁,但是会影响效率。
+    /**
+     * 独占锁,乐观锁。可设置为公平锁,但是会影响效率。
+     */
+    private final ReentrantLock lock = new ReentrantLock();
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final long TRY_CATCH_TIME = 500;
+
+    private static final String OPERATION = "operation";
 
     @Autowired
     private StringRedisTemplate redis;
@@ -84,12 +90,13 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
      *
      * @return
      */
+    @Override
     public HashOperations<String, Object, Object> getOperation(){
         try {
-            if(lock.tryLock(500, TimeUnit.MILLISECONDS)){
+            if(lock.tryLock(TRY_CATCH_TIME, TimeUnit.MILLISECONDS)){
                 try{
-                    if(map.get("operation") == null){
-                        map.put("operation",redis.opsForHash());
+                    if(map.get(OPERATION) == null){
+                        map.put(OPERATION,redis.opsForHash());
                     }
                 }finally {
                     lock.unlock();
@@ -98,6 +105,6 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
         } catch (InterruptedException e) {
             logger.info(Thread.currentThread().getName()+"was interrupted");
         }
-        return map.get("operation");
+        return map.get(OPERATION);
     }
 }

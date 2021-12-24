@@ -6,6 +6,7 @@ import com.qzlnode.epidemic.miniprogram.pojo.User;
 import com.qzlnode.epidemic.miniprogram.service.IndexService;
 import com.qzlnode.epidemic.miniprogram.util.BASE64;
 import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
+import io.lettuce.core.RedisConnectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.sql.SQLSyntaxErrorException;
+
 /**
  * @author qzlzzz
  */
 @Service
 public class IndexServiceImpl implements IndexService {
 
-    //日志
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    /**
+     * 日志
+     */
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private static final Integer MAX_PASSWORD_LONG = 30;
 
     @Autowired
     private UserDao userDao;
@@ -34,16 +41,23 @@ public class IndexServiceImpl implements IndexService {
      * @param user
      * @return
      */
-    @Transactional()
+    @Transactional(
+            rollbackFor = {
+                RedisConnectionException.class,
+                    SQLSyntaxErrorException.class
+            }
+    )
     @Override
-    public User LoginService(User user) {
+    public User loginService(User user) {
         Assert.notNull(user,"user in login service is null");
         String password = BASE64.encode(user.getUserPassword());
         user.setUserPassword(password);
         String[] userData = redisForUser.get(user);
         Integer userId = -1;
         if(userData != null) {
-            if(!userData[1].equals(password)) return user;
+            if(!userData[1].equals(password)) {
+                return user;
+            }
             userId = Integer.parseInt(userData[0]);
             user.setId(userId);
             return user;
@@ -62,19 +76,25 @@ public class IndexServiceImpl implements IndexService {
      * @param user
      * @return
      */
-    @Transactional
+    @Transactional(
+            rollbackFor = {
+                    SQLSyntaxErrorException.class,
+                    RedisConnectionException.class
+            }
+    )
     @Override
     public boolean registerService(User user) {
         Assert.notNull(user,"register service : user is null");
         String password = BASE64.encode(user.getUserPassword());
-        if(password.length() > 30){
+        if(password.length() > MAX_PASSWORD_LONG){
             logger.info("user phoneNumber: {} password too longer",user.getUserPhoneNumber());
             return false;
         }
         user.setUserPassword(password);
         String[] userMessage = redisForUser.get(user);
         if(userMessage != null){
-            return false;//已经登录
+            //已经登录
+            return false;
         }
         boolean target = userDao.registerUser(user);
         if(target){

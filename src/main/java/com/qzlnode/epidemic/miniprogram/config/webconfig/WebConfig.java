@@ -10,13 +10,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author qzlzzz
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**")
-                .excludePathPatterns(Arrays.asList("/","/all","/login","/register","/css/**","/js/**","/font/**","/images/**"));
+                .excludePathPatterns(Arrays.asList("/","/error","/druid/**","/all","/login","/register","/css/**","/js/**","/font/**","/images/**"));
     }
 
     @Override

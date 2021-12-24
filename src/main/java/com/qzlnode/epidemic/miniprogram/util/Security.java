@@ -19,8 +19,10 @@ import java.util.UUID;
  * @since 2021/12/7 晚上22:14
  */
 public class Security {
-
-    private static final long EFFECTIVE_TIME = 1000 * 60 * 30;//有效时间为30分钟
+    /**
+     * 有效时间为30分钟
+     */
+    private static final long EFFECTIVE_TIME = 1000 * 60 * 30;
 
     private static final String TOKEN_KEY = UUID.randomUUID().toString();
 
@@ -61,9 +63,9 @@ public class Security {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(TOKEN_KEY)).build();
        try {
            DecodedJWT verify = verifier.verify(token);
-           Integer user_id = verify.getClaim("user_id").asInt();
+           Integer userId = verify.getClaim("user_id").asInt();
            User user = new User();
-           user.setId(user_id);
+           user.setId(userId);
            MessageHolder.setUser(user);
            return true;
        }catch (SignatureVerificationException exception){
