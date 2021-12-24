@@ -1,3 +1,8 @@
+my:
+  property:
+    mainservice:
+      init:
+        delay: 120
 spring:
   web:
     resources:
@@ -7,7 +12,7 @@ spring:
       path: /
       load-on-startup: 1
   datasource:
-    url: jdbc:mysql://localhost:3306/epidemic&allowMultiQueries=true #这里还需改进
+    url: jdbc:mysql://localhost:3306/epidemic?allowMultiQueries=true #这里还需改进
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -31,12 +36,13 @@ spring:
             drop-table-allow: false
             alter-table-allow: false
             select-into-outfile-allow: false
+            multi-statement-allow: true
   jdbc:
     template:
       query-timeout: 3
   redis: #此连接应为主从+哨兵 initial为一个端口
     port: 6379
-    host: 192.168.119.128
+    host: 192.168.119.130
     database: 0
     client-type: lettuce
     lettuce:
