@@ -2,6 +2,8 @@ package com.qzlnode.epidemic.miniprogram.interceptor;
 
 import com.qzlnode.epidemic.miniprogram.util.Security;
 import com.qzlnode.epidemic.miniprogram.util.Status;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,6 +18,8 @@ import java.io.PrintWriter;
  */
 public class LoginInterceptor implements HandlerInterceptor {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      *
      * @param request
@@ -29,6 +33,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token = request.getHeader("token");
         boolean target = Security.parseToken(token);
         if(!target){
+            logger.error("the {} was interceptered",request.getRequestURI());
             response.setContentType("application/json;charset=utf-8");
             PrintWriter writer = response.getWriter();
             writer.write(Status.UNSUCCESSFUL.getReasonPhrase());

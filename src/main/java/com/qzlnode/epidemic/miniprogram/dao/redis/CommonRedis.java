@@ -19,7 +19,7 @@ public interface CommonRedis<T> {
      * <h3>向redis数据库中存入key-value值</h3>
      * @param object
      */
-    void set(T object);
+    boolean set(T object);
 
     /**
      * <h3>删除库中的键值对</h3>
@@ -30,5 +30,12 @@ public interface CommonRedis<T> {
      return false;
     }
 
-
+    /**
+     * <h3>更新缓存库中的值</h3>
+     * @param object
+     * @return
+     */
+    default boolean update(T object){
+        return false;
+    }
 }

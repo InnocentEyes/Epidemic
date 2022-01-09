@@ -9,20 +9,32 @@
     <id column="user_id" property="userId"/>
     <id column="user_name" property="userName"/>
     <id column="type_no" property="typeNo"/>
+    <id column="type_name" property="typeName"/>
     <id column="likes" property="likes"/>
     <id column="desc" property="comment"/>
   </resultMap>
 
-  <insert id="addComment">
-    <if test="userId != null and typeNo != null">
-      insert into comment(`user_id`,`type_no`,`likes`,`desc`) values (#{userId},#{typeNo},#{likes},#{comment})
-    </if>
-  </insert>
+    <insert id="addComment">
+        <if test="userId != null and typeNo != null">
+        insert into comment(`user_id`,`type_no`,`likes`,`desc`) values (#{userId},#{typeNo},#{likes},#{comment})
+        </if>
+    </insert>
 
-  <select id="findComment" resultMap="comment_sql">
-     <if test="user != null">
-        select `user_name`,`desc`,`likes`,`pubtime` from user_message,comment
-        where user_message.id = comment.user_id and comment.type_no = #{typeNo};
-     </if>
-  </select>
+    <update id="updateLikes">
+        update comment set `likes` = `likes` + 1 where `id` = #{commentId}
+    </update>
+
+    <select id="findComment" resultMap="comment_sql">
+         <if test="typeNo != null">
+            select `comment`.`id`,`comment`.`type_no`,`type_name`,`user_id`,`user_name`,`desc`,`likes`,`pubtime` from user_`user_message`,`comment`,`comment_type`
+            where `comment`.`user_id` = `user_message`.`id` and `comment`.`type_no` = `comment_type`.`type_no` and `comment`.`type_no` = #{typeNo}
+        </if>
+    </select>
+
+    <select id="findCommentByUserId" resultMap="comment_sql">
+        <if test="userId != null">
+            select `comment`.`id`,`comment`.`type_no`,`type_name`,`desc`,`pubtime` from `comment`,`comment_type`
+            where `comment`.`type_no` = `comment_type`.`type_no` and `comment`.`user_id` = #{userId} and date_sub(curdate(),interval 7 day) &lt;= date(`pubtime`)
+        </if>
+    </select>
 </mapper>

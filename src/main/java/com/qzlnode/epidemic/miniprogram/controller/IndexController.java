@@ -3,7 +3,7 @@ package com.qzlnode.epidemic.miniprogram.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
 import com.qzlnode.epidemic.miniprogram.service.IndexService;
-import com.qzlnode.epidemic.miniprogram.util.ParseMessage;
+import com.qzlnode.epidemic.miniprogram.util.ArgsHandler;
 import com.qzlnode.epidemic.miniprogram.util.Security;
 import com.qzlnode.epidemic.miniprogram.util.Status;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class IndexController {
             return new ResponseEntity<>(Status.UNSUCCESSFUL.getReasonPhrase(),HttpStatus.METHOD_NOT_ALLOWED);
         }
         logger.info("user message detail is {}",userMessage);
-        User user = ParseMessage.ToUser(userMessage);
+        User user = ArgsHandler.build().parse(User.class,userMessage);
         user = indexService.loginService(user);
         if(user.getId() != null) {
             logger.info("user login acc");
@@ -63,13 +63,13 @@ public class IndexController {
      * @throws JsonProcessingException
      */
     @PostMapping(value = "/register",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String register(@RequestBody(required = false) String userMessage){
+    public String register(@RequestBody(required = false) String userMessage) throws JsonProcessingException{
         if(!StringUtils.hasLength(userMessage)){
             logger.error("register : user message is null");
             //没有用户信息
             return Status.UNSUCCESSFUL.getReasonPhrase();
         }
-        User user = ParseMessage.ToUser(userMessage);
+        User user = ArgsHandler.build().parse(User.class,userMessage);
         boolean target = indexService.registerService(user);
         if(!target){
             //已有账户或已经登录
@@ -86,7 +86,9 @@ public class IndexController {
      * @return
      */
     @ResponseStatus(value = HttpStatus.FORBIDDEN,reason = "user info is missing !")
-    @ExceptionHandler(NullPointerException.class)
+    @ExceptionHandler(
+            {NullPointerException.class,
+            JsonProcessingException.class})
     public String handlerError(HttpServletRequest request,NullPointerException ex){
         logger.error("parseUser error, the detail is :"+ex.getMessage());
         return Status.UNSUCCESSFUL.getReasonPhrase();

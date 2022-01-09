@@ -4,6 +4,8 @@ my:
       init:
         delay: 120
 spring:
+  application:
+    name: epidemic
   web:
     resources:
       static-locations: classpath:/static/

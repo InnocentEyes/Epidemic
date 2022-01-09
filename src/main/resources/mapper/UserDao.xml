@@ -14,9 +14,21 @@
   <insert id="registerUser">
         insert into user_message(`user_name`,`phone_number`,`password`) values (#{userName},#{userPhoneNumber},#{userPassword})
   </insert>
+    <update id="updateUser">
+        <if test="id != null">
+          update user_message
+            <set>
+              <if test="userName != null"> `user_name` = #{userName}, </if>
+              <if test="profile != null"> `profile` = #{profile},</if>
+            </set>
+            <where>
+              `id` = #{id}
+            </where>
+        </if>
+    </update>
 
-  <select id="findUser" resultType="java.lang.Integer">
-    select `id` from user_message where `phone_number` = #{userPhoneNumber} and `password` = #{userPassword};
+    <select id="findUser" resultMap="user_select_sql">
+    select `id`,`user_name` from user_message where `phone_number` = #{userPhoneNumber} and `password` = #{userPassword};
   </select>
 
 </mapper>

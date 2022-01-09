@@ -16,7 +16,7 @@ public interface UserDao {
      * @param user user message
      * @return {@code true} or {@code false}
      */
-    Integer findUser(User user);
+    User findUser(User user);
 
     /**
      * <h3></h3>
@@ -24,4 +24,11 @@ public interface UserDao {
      * @return
      */
     boolean registerUser(User user);
+
+    /**
+     *
+     * @param user
+     * @return
+     */
+    boolean updateUser(User user);
 }

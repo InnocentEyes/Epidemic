@@ -4,17 +4,13 @@ import com.qzlnode.epidemic.miniprogram.dao.redis.CommonRedis;
 import com.qzlnode.epidemic.miniprogram.dao.redis.Operations;
 import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import com.qzlnode.epidemic.miniprogram.util.JsonUtil;
-import com.qzlnode.epidemic.miniprogram.util.ParseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,14 +56,16 @@ public class RedisForMain implements CommonRedis<Province>, Operations<ListOpera
      * @param object
      */
     @Override
-    public void set(Province object) {
+    public boolean set(Province object) {
         String json = JsonUtil.provinceToJson(object);
         ListOperations<String, String> operation = getOperation();
         try {
             operation.rightPush(KEY,json);
             redis.expireAt(KEY,new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24));
+            return true;
         }catch (Exception e){
             logger.info("send data to redis error");
+            return false;
         }
     }
 

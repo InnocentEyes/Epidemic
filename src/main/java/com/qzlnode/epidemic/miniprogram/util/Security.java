@@ -20,9 +20,9 @@ import java.util.UUID;
  */
 public class Security {
     /**
-     * 有效时间为30分钟
+     * 有效时间为2小时
      */
-    private static final long EFFECTIVE_TIME = 1000 * 60 * 30;
+    private static final long EFFECTIVE_TIME = 1000 * 60 * 60 * 2;
 
     private static final String TOKEN_KEY = UUID.randomUUID().toString();
 

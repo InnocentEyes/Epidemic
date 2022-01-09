@@ -5,7 +5,9 @@ import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author qzlzzz
@@ -28,23 +30,24 @@ public class ReturnValueHandler {
         for(int i = 0 ; i < length ; i++){
             String[] tmp = values[i].split("/");
             list.add(   "{" +
-                            "\"userId\":" + tmp[0] +
-                            ", \"userName\":\"" + tmp[1] + "\"" +
-                            ", \"time\":\"" + tmp[2] + "\"" +
-                            ", \"comment\":\"" + tmp[3] + "\"" +
+                            "\"commentId\":" + tmp[0] +
+                            "\"userId\":" + tmp[1] +
+                            ", \"userName\":\"" + tmp[2] + "\"" +
+                            ", \"time\":\"" + tmp[3] + "\"" +
+                            ", \"comment\":\"" + tmp[4] + "\"" +
                             '}'
                     );
         }
         Assert.notEmpty(list,"list is null");
-        return list;
+        return list.stream().map(element -> {
+            return element.replace("\\","");
+        }).collect(Collectors.toList());
     }
 
     private static List<Province> handlerPRValue(String[] values){
-        int length = values.length;
         List<Province> allData = new ArrayList<>();
-        for(int i = 0 ; i < length ; i++){
-            Province province = JsonUtil.jsonToProvince(values[i]);
-            if(province != null) allData.add(province);
+        for (String value : values) {
+            allData.add(JsonUtil.jsonToProvince(value));
         }
         return allData;
     }

@@ -44,7 +44,9 @@ public class MainServiceImpl implements MainService {
         data = allData.toArray(new String[allData.size()]);
         for (String datum : data) {
             Province province = JsonUtil.jsonToProvince(datum);
-            redis.set(province);
+            if(!redis.set(province)){
+                throw new RuntimeException("redis data set error");
+            }
         }
         logger.info("get the epidemic data on mysql and put the epidemic to redis at {}",new Date());
         return ReturnValueHandler.handlerReturnValue(data,Province.class);

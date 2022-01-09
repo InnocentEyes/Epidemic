@@ -75,4 +75,9 @@ public class MessageHolder {
     public static void setSidId(String sidId){
         SID_THREAD_LOCAL.set(sidId);
     }
+
+    public static boolean hasUser(){
+        return !((USER_THREAD_LOCAL.get() == null) ? Boolean.TRUE : Boolean.FALSE);
+    }
+
 }

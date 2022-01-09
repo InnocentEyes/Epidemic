@@ -1,7 +1,7 @@
 package com.qzlnode.epidemic.miniprogram.service.Impl;
 
 import com.qzlnode.epidemic.miniprogram.dao.mysql.CommentDao;
-import com.qzlnode.epidemic.miniprogram.dao.redis.Impl.RedisForComment;
+import com.qzlnode.epidemic.miniprogram.dao.redis.Impl.RedisForCommentType;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.service.CommentService;
 import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private RedisForComment redis;
+    private RedisForCommentType redis;
 
     @Autowired
     private CommentDao commentDao;
@@ -40,8 +40,7 @@ public class CommentServiceImpl implements CommentService {
         comment.setUserId(MessageHolder.getUserId());
         if(commentDao.addComment(comment)){
             logger.info("system send comment to mysql acc");
-            redis.set(comment);
-            return true;
+            return redis.set(comment);
         }
         return false;
     }
@@ -60,7 +59,7 @@ public class CommentServiceImpl implements CommentService {
             return userComments;
         }
         List<Comment> comments = commentDao.findComment(comment);
-        if(comments.size() == 0){
+        if(comments == null || comments.size() == 0){
             logger.info("this type no : {} , has no comment in mysql",comment.getTypeNo());
             return null;
         }
@@ -70,5 +69,15 @@ public class CommentServiceImpl implements CommentService {
         logger.info("set comment to redis,type no : {}",comment.getTypeNo());
         res = comments.toArray(new String[comments.size()]);
         return ReturnValueHandler.handlerReturnValue(res,Comment.class);
+    }
+
+    /**
+     *
+     * @param comment comment对象
+     * @return
+     */
+    @Override
+    public boolean addLikes(Comment comment) {
+        return false;
     }
 }

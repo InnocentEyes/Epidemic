@@ -22,18 +22,24 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class RedisForUser implements CommonRedis<User>, Operations<HashOperations<String, Object, Object>> {
 
-    private Map<String,HashOperations<String, Object, Object>> map = new HashMap<>();
+    private final Map<String,HashOperations<String, Object, Object>> map = new HashMap<>();
 
     /**
      * 独占锁,乐观锁。可设置为公平锁,但是会影响效率。
      */
     private final ReentrantLock lock = new ReentrantLock();
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final long TRY_CATCH_TIME = 500;
 
     private static final String OPERATION = "operation";
+
+    private static final String USER_ID = "user_id";
+
+    private static final String USER_NAME = "user_name";
+
+    private static final String USER_PASSWORD = "user_password";
 
     @Autowired
     private StringRedisTemplate redis;
@@ -45,43 +51,44 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
     @Override
     public String[] get(User user){
         HashOperations<String, Object, Object> operation = getOperation();
-        String key = "user_phone :"+user.getUserPhoneNumber();
-        String userId = "";
-        String userPassword = "";
+        String key = USER_ID + ":" + user.getId();
+        String userName = null;
+        String userPassword = null;
         try {
-            userId = (String)operation.get(key, "id");
-            userPassword = (String) operation.get(key,"password");
+            userName = (String) operation.get(key,USER_NAME);
+            userPassword = (String) operation.get(key,USER_PASSWORD);
         }catch (Exception e){
-            logger.error("get the user{} id error",new Object[]{user.getId()});
+            logger.error("get the user{} id error",user.getId());
         }
-        if(userId == null){
+        if(userPassword == null){
             return null;
         }
-        return new String[]{userId,userPassword};
+        return new String[]{userPassword,userName};
     }
 
     /**
      * <h3></h3>
      */
     @Override
-    public void set(User user) {
-        if(user.getId() == 0){
+    public boolean set(User user) {
+        if(user.getId() == null || user.getId() < 1){
             logger.info("user named :"+user.getUserName()+"who user id is null");
             throw new IllegalArgumentException("user id is null");
         }
         HashOperations<String, Object, Object> operation = getOperation();
         Map<String,Object> userMessage = new HashMap<>();
-        String key = "user_phone :"+user.getUserPhoneNumber();
-        userMessage.put("id",user.getId().toString());
-        userMessage.put("password",user.getUserPassword());
+        String key = USER_ID + ":" + user.getId();
+        userMessage.put(USER_NAME,user.getUserName());
+        userMessage.put(USER_PASSWORD,user.getUserPassword());
         try {
             operation.putAll(key, userMessage);
             redis.expireAt(key,new Date(System.currentTimeMillis() + 1000*60*30));
+            logger.info("put the user named "+user.getUserName()+" message to redis acc");
+            return true;
         }catch (Exception e){
             logger.error("put the user named "+user.getUserName()+" message to redis error \n {}",e.getMessage());
-            return;
+            return false;
         }
-        logger.info("put the user named"+user.getUserName()+"message to redis acc");
     }
 
 
@@ -103,7 +110,7 @@ public class RedisForUser implements CommonRedis<User>, Operations<HashOperation
                 }
             }
         } catch (InterruptedException e) {
-            logger.info(Thread.currentThread().getName()+"was interrupted");
+            logger.info(Thread.currentThread().getName()+" was interrupted");
         }
         return map.get(OPERATION);
     }

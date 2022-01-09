@@ -1,14 +1,19 @@
 package com.qzlnode.epidemic.miniprogram.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.qzlnode.epidemic.miniprogram.dto.CommentView;
+import com.qzlnode.epidemic.miniprogram.dto.ResultView;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
 import com.qzlnode.epidemic.miniprogram.pojo.Result;
 import com.qzlnode.epidemic.miniprogram.service.CommentService;
 import com.qzlnode.epidemic.miniprogram.service.CommentTypeService;
 import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
-import com.qzlnode.epidemic.miniprogram.util.ParseMessage;
+import com.qzlnode.epidemic.miniprogram.util.ArgsHandler;
 import com.qzlnode.epidemic.miniprogram.util.Status;
+import org.apache.ibatis.reflection.ArrayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author qzlzzz
@@ -45,9 +49,9 @@ public class CommentController {
      * @return
      */
     @PostMapping(value = "/mobile/send",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String sendComment(@RequestParam Map<String,String> commentDetail){
-        Comment comment = ParseMessage.ToComment(commentDetail);
-        if(comment == null){
+    public String sendComment(@RequestParam(required = false) Map<String,String> commentDetail) throws JsonProcessingException {
+        Comment comment = ArgsHandler.build().parse(Comment.class,commentDetail);
+        if(comment.getTypeNo() <= 0 || comment.getComment() == null){
             logger.info("user "+MessageHolder.getUserId()+"send null comment or system send null typeNo");
             MessageHolder.clearData();
             return Status.UNSUCCESSFUL.getReasonPhrase();
@@ -61,18 +65,18 @@ public class CommentController {
     }
 
     /**
-     *
+     * 此接口未写完
      * @param typeId
      * @return
      */
+    @JsonView(CommentView.Detail.class)
     @GetMapping(value = "/mobile/comment/getInfo",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getComments(@RequestParam(value = "typeId",required = false) Integer typeId){
+    public ResponseEntity<List<String>> getComments(@RequestParam(required = false) Map<String,String> typeId) throws JsonProcessingException {
         if(typeId == null){
             throw new NullPointerException("must contain typeId");
         }
-        Comment comment = ParseMessage.ToComment(typeId);
-        if(comment == null){
-            logger.info("system send the typeId to lager");
+        Comment comment = ArgsHandler.build().parse(Comment.class,typeId);
+        if(comment.getTypeNo() <= 0){
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
         List<String> commentsByNo = commentService.getCommentsByNo(comment);
@@ -83,11 +87,17 @@ public class CommentController {
         return new ResponseEntity<>(commentsByNo,HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param pn
+     * @return
+     */
+    @JsonView(ResultView.Detail.class)
     @GetMapping(value = "/mobile/types",produces = MediaType.APPLICATION_JSON_VALUE)
-    public Result<CommentType> getTypes(@RequestParam(value = "count",required = false) Integer pn){
+    public Result getTypes(@RequestParam(value = "count",required = false,defaultValue = "1") Integer pn){
         if(pn < 1){
             logger.error("the page count is smaller than one, record at {}",new Date());
-            return new Result<>(Status.UNSUCCESSFUL,null);
+            return new Result(Status.PAGE_SIZE_SMALL.getCord(),Status.PAGE_SIZE_SMALL.getReasonPhrase());
         }
         MessageHolder.clearData();
         Page<CommentType> typePage = new Page<>(pn, 5);
@@ -95,23 +105,37 @@ public class CommentController {
         List<CommentType> records = page.getRecords();
         if( records == null ||  records.size() == 0){
             logger.error("there is no records in mysql");
-            return new Result<>(Status.UNSUCCESSFUL,null);
+            return new Result(Status.UNSUCCESSFUL.getCord(),Status.UNSUCCESSFUL.getReasonPhrase());
         }
         logger.info("get the message : {} acc",records);
-        return new Result<>(Status.SUCCESSFUL,page.getRecords());
+        return new Result(Status.SUCCESSFUL.getCord(),Status.SUCCESSFUL.getReasonPhrase(),records.stream().map(Object.class :: cast).collect(Collectors.toList()));
     }
 
+    /**
+     *
+     * @param commentId
+     * @return
+     */
     @GetMapping(value = "/mobile/likes",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String sendLikes(){
-        MessageHolder.clearData();
+    public String sendLikes(@RequestParam(required = false) Map<String,String> commentId) throws JsonProcessingException {
+        ArgsHandler.build().parse(Comment.class,commentId);
         return Status.SUCCESSFUL.getReasonPhrase();
     }
 
-    @ResponseStatus(code = HttpStatus.FORBIDDEN,reason = "TypeId must not be empty")
-    @ExceptionHandler(NullPointerException.class)
-    public void handlerError(HttpServletRequest request,Exception ex){
+    /**
+     *
+     * @param request
+     * @param ex
+     */
+    @ResponseStatus(code = HttpStatus.FORBIDDEN,reason = "typeId or commentId must not be empty")
+    @ExceptionHandler({
+            NullPointerException.class,
+            JsonProcessingException.class
+    })
+    public String handlerError(HttpServletRequest request,Exception ex){
         MessageHolder.clearData();
-        logger.error("handler the "+request.getRequestURI()+" error, \n" +
-                "because"+ex.getMessage());
+        logger.error("handler the "+request.getRequestURI()+" error, \n " +
+                "because of "+ex.getMessage());
+        return Status.UNSUCCESSFUL.getReasonPhrase();
     }
 }

@@ -24,4 +24,13 @@ public interface CommentDao {
      * @return
      */
     List<Comment> findComment(Comment comment);
+
+    /**
+     *
+     * @param comment
+     * @return
+     */
+    boolean updateLikes(Comment comment);
+
+    List<Comment> findCommentByUserId(Comment comment);
 }

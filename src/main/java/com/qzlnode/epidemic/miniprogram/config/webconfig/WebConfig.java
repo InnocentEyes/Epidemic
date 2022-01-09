@@ -1,7 +1,6 @@
 package com.qzlnode.epidemic.miniprogram.config.webconfig;
 
 import com.qzlnode.epidemic.miniprogram.interceptor.LoginInterceptor;
-import com.qzlnode.epidemic.miniprogram.msgconverter.ResultConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,6 +23,5 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new ResultConverter());
     }
 }

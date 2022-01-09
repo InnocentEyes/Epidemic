@@ -23,4 +23,11 @@ public interface CommentService {
      * @return
      */
     List<String> getCommentsByNo(Comment comment);
+
+    /**
+     * <h3>根据言论的id值增加点赞</h3>
+     * @param comment comment对象
+     * @return {@code false} or {@code true}
+     */
+    boolean addLikes(Comment comment);
 }

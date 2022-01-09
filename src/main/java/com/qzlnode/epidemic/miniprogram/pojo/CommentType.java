@@ -1,8 +1,12 @@
 package com.qzlnode.epidemic.miniprogram.pojo;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.qzlnode.epidemic.miniprogram.dto.CommentTypeView;
+
 /**
  * @author qzlzzz
  */
+@JsonView({CommentTypeView.class})
 public class CommentType {
 
     private Integer id;

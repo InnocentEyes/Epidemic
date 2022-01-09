@@ -7,32 +7,57 @@ public enum Status {
     /**
      * 操作不成功
      */
-    UNSUCCESSFUL(302,"{\"code\": 302, \"message\": \"operation unsuccessful\"}"),
+    UNSUCCESSFUL(-1,"{\"message\": \"fail\", \"reason\": \"current operation unsuccessful\"}"),
 
     /**
      * 操作成功
      */
-    SUCCESSFUL(200,"{\"code\": 200, \"message\": \"operation successful\"}");
+    SUCCESSFUL(1,"{\"message\": \"success\", \"reason\": \"current operation successful\"}"),
 
-    private final int value;
+    /**
+     * 
+     */
+    LOGIN_UNSUCCESSFUL(-1,"{\"message\": \"operation fail\", \"reason\": \"maybe phone or password error\"}"),
 
+    /**
+     * 
+     */
+    LOGIN_SUCCESSFUL(1,"{\"message\": \"login success\", \"reason\": \"user login success,the effective time is 30 minutes\"}"),
+
+    /**
+     * 
+     */
+    USERID_TOO_SMALL(-1,"{\"message\": \"operation fail\", \"reason\": \"the user id must larger than 0,but not equal 0\"}"),
+
+    /**
+     * 
+     */
+    TYPENO_TOO_SMALL(-1,"{\"message\": \"operation fail\", \"reason\": \"the comment type number too small\"}"),
+
+    /**
+     * 
+     */
+    PAGE_SIZE_SMALL(-1,"{\"message\": \"operation fail\", \"reason\": \"the page size must larger than 0\"}"),
+
+    /**
+     * 
+     */
+    PAFE_SIZE_LARGE(-1,"{\"message\": \"operation fail\", \"reason\": \"the page size too larger\"}");
+    
+    private final Integer code;
+    
     private final String reasonPhrase;
 
-    public int getValue() {
-        return value;
-    }
-
     public String getReasonPhrase() {
-        return reasonPhrase;
+        return reasonPhrase.replace("\\","");
     }
 
-    private Status(int value, String reasonPhrase){
-        this.value = value;
+    public Integer getCord(){
+        return code;
+    }
+
+    private Status(Integer code, String reasonPhrase) {
+        this.code = code;
         this.reasonPhrase = reasonPhrase;
-    }
-
-    @Override
-    public String toString() {
-        return this.value + " " + this.name();
     }
 }

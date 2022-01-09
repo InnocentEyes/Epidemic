@@ -9,6 +9,7 @@ public class User {
     private String userPhoneNumber;
     private String userName;
     private String userPassword;
+    private String profile;
 
     public Integer getId() {
         return id;
@@ -40,6 +41,14 @@ public class User {
 
     public void setUserPassword(String userPassword) {
         this.userPassword = userPassword;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 
     @Override

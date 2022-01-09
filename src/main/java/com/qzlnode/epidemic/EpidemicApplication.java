@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableAspectJAutoProxy
-@EnableTransactionManagement
+//@EnableTransactionManagement
 @EnableScheduling
 @MapperScan("com.qzlnode.epidemic.miniprogram.dao.mysql")
 @SpringBootApplication

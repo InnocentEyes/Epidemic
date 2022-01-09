@@ -50,21 +50,13 @@ public class IndexServiceImpl implements IndexService {
     @Override
     public User loginService(User user) {
         Assert.notNull(user,"user in login service is null");
+        if(user.getId() != null) return user;
         String password = BASE64.encode(user.getUserPassword());
         user.setUserPassword(password);
-        String[] userData = redisForUser.get(user);
-        Integer userId = -1;
-        if(userData != null) {
-            if(!userData[1].equals(password)) {
-                return user;
-            }
-            userId = Integer.parseInt(userData[0]);
-            user.setId(userId);
-            return user;
-        }
-        userId = userDao.findUser(user);
-        if(userId != null && userId != -1){
-            user.setId(userId);
+        User tmp = userDao.findUser(user);
+        if(tmp != null){
+            user.setId(tmp.getId());
+            user.setUserName(tmp.getUserName());
             redisForUser.set(user);
             return user;
         }
