@@ -36,7 +36,7 @@ public class ResultSerializer extends JsonSerializer<List<Object>> {
                     .filter(Comment.class :: isInstance)
                     .map(Comment.class :: cast)
                     .toArray(Comment[]::new);
-            boolean target = (comments[0].getUserName() == null) ? Boolean.TRUE : Boolean.FALSE;
+            boolean target = (comments[0].getComment() == null) ? Boolean.TRUE : Boolean.FALSE;
             if(!target){
                 mapper.setConfig(mapper.getSerializationConfig().withView(CommentView.Detail.class));
             }else {

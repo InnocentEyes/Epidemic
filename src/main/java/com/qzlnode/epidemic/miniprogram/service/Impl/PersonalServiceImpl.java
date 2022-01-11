@@ -1,10 +1,13 @@
 package com.qzlnode.epidemic.miniprogram.service.Impl;
 
+import com.qzlnode.epidemic.miniprogram.dao.mysql.CommentDao;
 import com.qzlnode.epidemic.miniprogram.dao.mysql.UserDao;
 import com.qzlnode.epidemic.miniprogram.dao.redis.Impl.RedisForUser;
+import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
 import com.qzlnode.epidemic.miniprogram.service.PersonalService;
+import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import io.lettuce.core.RedisCommandTimeoutException;
 import io.lettuce.core.RedisConnectionException;
 import org.slf4j.Logger;
@@ -28,6 +31,9 @@ public class PersonalServiceImpl implements PersonalService {
     private UserDao userDao;
 
     @Autowired
+    private CommentDao commentDao;
+
+    @Autowired
     private RedisForUser redis;
 
     /**
@@ -49,8 +55,23 @@ public class PersonalServiceImpl implements PersonalService {
     }
 
     @Override
-    public List<CommentType> getRecord7ByUserId() {
-        return null;
+    public List<Comment> getCommTypeCord7() {
+        if(!MessageHolder.hasUser()){
+            throw new IllegalArgumentException("Validation exception, the user's id value is empty !");
+        }
+        Comment comment = new Comment();
+        comment.setUserId(MessageHolder.getUserId());
+        return commentDao.findUserComm(comment);
+    }
+
+    @Override
+    public List<Comment> getUserCommDtl() {
+        if(!MessageHolder.hasUser()){
+            throw new IllegalArgumentException("Validation exception, the user's id value is empty !");
+        }
+        Comment comment = new Comment();
+        comment.setUserId(MessageHolder.getUserId());
+        return commentDao.findUserCommDtl(comment);
     }
 
 }

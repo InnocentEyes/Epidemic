@@ -42,7 +42,12 @@ public enum Status {
     /**
      * 
      */
-    PAFE_SIZE_LARGE(-1,"{\"message\": \"operation fail\", \"reason\": \"the page size too larger\"}");
+    PAFE_SIZE_LARGE(-1,"{\"message\": \"operation fail\", \"reason\": \"the page size too larger\"}"),
+
+    /**
+     *
+     */
+    NO_RECORDS(2,"{\"message\": \"operation fail\", \"reason\": \"uer has not commented for seven days\"}");
     
     private final Integer code;
     

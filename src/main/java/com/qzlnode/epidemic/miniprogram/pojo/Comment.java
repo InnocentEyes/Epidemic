@@ -16,10 +16,10 @@ public class Comment {
     @JsonView({CommentView.class})
     private Integer commentId;
 
-    @JsonView(CommentView.Detail.class)
+    @JsonView(CommentView.class)
     private Integer userId;
 
-    @JsonView(CommentView.Detail.class)
+    @JsonView(CommentView.class)
     private String userName;
 
     @JsonView(CommentView.class)
@@ -28,10 +28,10 @@ public class Comment {
     @JsonView(CommentView.class)
     private Integer typeName;
 
-    @JsonView(CommentView.class)
+    @JsonView(CommentView.Detail.class)
     private String comment;
 
-    @JsonView(CommentView.class)
+    @JsonView(CommentView.Detail.class)
     private Date pubtime;
 
     @JsonView(CommentView.Detail.class)

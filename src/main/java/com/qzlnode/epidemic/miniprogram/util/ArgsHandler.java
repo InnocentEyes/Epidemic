@@ -51,6 +51,9 @@ public class ArgsHandler {
         if (type.isAssignableFrom(Comment.class)){
             return (T) toComment(map);
         }
+        if(type.isAssignableFrom(User.class)){
+            return (T) toUser(map);
+        }
         return null;
     }
 
@@ -58,7 +61,8 @@ public class ArgsHandler {
         Assert.hasLength(message,"message detail no be null");
         if(type.isAssignableFrom(Comment.class)){
             return (T) toComment(message);
-        }else if(type.isAssignableFrom(User.class)){
+        }
+        if(type.isAssignableFrom(User.class)){
             return (T) toUser(message);
         }
         return null;

@@ -1,5 +1,6 @@
 package com.qzlnode.epidemic.miniprogram.service;
 
+import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
 
@@ -18,5 +19,15 @@ public interface PersonalService {
      */
     boolean changeMessage(User user);
 
-    List<CommentType> getRecord7ByUserId();
+    /**
+     *
+     * @return
+     */
+    List<Comment> getCommTypeCord7();
+
+    /**
+     *
+     * @return
+     */
+    List<Comment> getUserCommDtl();
 }

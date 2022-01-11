@@ -74,6 +74,11 @@ public class RedisForCommentType implements CommonRedis<Comment>,Operations<ZSet
         }
     }
 
+    @Override
+    public boolean update(Comment object) {
+        return CommonRedis.super.update(object);
+    }
+
     /**
      * 
      * @return

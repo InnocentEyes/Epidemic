@@ -32,5 +32,17 @@ public interface CommentDao {
      */
     boolean updateLikes(Comment comment);
 
-    List<Comment> findCommentByUserId(Comment comment);
+    /**
+     *
+     * @param comment
+     * @return
+     */
+    List<Comment> findUserCommDtl(Comment comment);
+
+    /**
+     *
+     * @param comment
+     * @return
+     */
+    List<Comment> findUserComm(Comment comment);
 }

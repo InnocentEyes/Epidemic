@@ -26,15 +26,31 @@
 
     <select id="findComment" resultMap="comment_sql">
          <if test="typeNo != null">
-            select `comment`.`id`,`comment`.`type_no`,`type_name`,`user_id`,`user_name`,`desc`,`likes`,`pubtime` from user_`user_message`,`comment`,`comment_type`
-            where `comment`.`user_id` = `user_message`.`id` and `comment`.`type_no` = `comment_type`.`type_no` and `comment`.`type_no` = #{typeNo}
+            select `comment`.`id`,`comment`.`type_no`,`type_name`,`user_id`,`user_name`,`desc`,`likes`,`pubtime` from `user_message`,`comment`,`comment_type`
+            where `comment`.`user_id` = `user_message`.`id`
+              and `comment`.`type_no` = `comment_type`.`type_no`
+              and `comment`.`type_no` = #{typeNo}
         </if>
     </select>
 
-    <select id="findCommentByUserId" resultMap="comment_sql">
+    <select id="findUserCommDtl" resultMap="comment_sql">
         <if test="userId != null">
-            select `comment`.`id`,`comment`.`type_no`,`type_name`,`desc`,`pubtime` from `comment`,`comment_type`
-            where `comment`.`type_no` = `comment_type`.`type_no` and `comment`.`user_id` = #{userId} and date_sub(curdate(),interval 7 day) &lt;= date(`pubtime`)
+            select `comment`.`id`,`comment`.`type_no`,`type_name`,`user_id`,`user_name`,`desc`,`likes`,`pubtime` from `comment`,`comment_type`,`user_message`
+            where `comment`.`user_id` = `user_message`
+            and `comment`.`type_no` = `comment_type`.`type_no`
+            and `comment`.`user_id` = #{userId}
+            and date_sub(curdate(),interval 7 day) &lt;= date(`pubtime`)
         </if>
     </select>
+    <select id="findUserComm" resultMap="comment_sql">
+        <if test="userId != null">
+            select `comment`.`id`,`user_id`,`user_name`,`comment`.`type_no`,`type_name` from `user_message`,`comment`,`comment_type`
+            where `comment`.`user_id` = #{userId}
+            and `comment`.`user_id` = `user_message`.`id`
+            and `comment`.`type_no` = `comment_type`.`type_no`
+            and date_sub(curdate(),interval 7 day) &lt;= date(`pubtime`)
+        </if>
+    </select>
+
+
 </mapper>
