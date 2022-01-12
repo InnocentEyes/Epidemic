@@ -1,7 +1,11 @@
 package com.qzlnode.epidemic.miniprogram.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.pojo.Province;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -14,6 +18,8 @@ import java.util.stream.Collectors;
  */
 public class ReturnValueHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReturnValueHandler.class);
+
     public static List handlerReturnValue(String[] values,Class object){
         if(object.isAssignableFrom(Province.class)){
             return handlerPRValue(values);
@@ -24,24 +30,10 @@ public class ReturnValueHandler {
         return null;
     }
 
-    private static List<String> handlerCRvalue(String[] values){
-        int length = values.length;
-        List<String> list = new ArrayList<>();
-        for(int i = 0 ; i < length ; i++){
-            String[] tmp = values[i].split("/");
-            list.add(   "{" +
-                            "\"commentId\":" + tmp[0] +
-                            "\"userId\":" + tmp[1] +
-                            ", \"userName\":\"" + tmp[2] + "\"" +
-                            ", \"time\":\"" + tmp[3] + "\"" +
-                            ", \"comment\":\"" + tmp[4] + "\"" +
-                            '}'
-                    );
-        }
-        Assert.notEmpty(list,"list is null");
-        return list.stream().map(element -> {
-            return element.replace("\\","");
-        }).collect(Collectors.toList());
+    private static List<Comment> handlerCRvalue(String[] values){
+        return Arrays.stream(values)
+                .map(element -> JsonUtil.jsonToComment(element))
+                .collect(Collectors.toList());
     }
 
     private static List<Province> handlerPRValue(String[] values){

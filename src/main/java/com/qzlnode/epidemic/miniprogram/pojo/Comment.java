@@ -1,7 +1,9 @@
 package com.qzlnode.epidemic.miniprogram.pojo;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.qzlnode.epidemic.miniprogram.dto.CommentView;
+import com.qzlnode.epidemic.miniprogram.dto.serializer.DateSerializer;
 
 import javax.swing.text.View;
 import java.util.Date;
@@ -28,9 +30,10 @@ public class Comment {
     @JsonView(CommentView.class)
     private Integer typeName;
 
-    @JsonView(CommentView.Detail.class)
+    @JsonView(CommentView.class)
     private String comment;
 
+    @JsonSerialize(using = DateSerializer.class)
     @JsonView(CommentView.Detail.class)
     private Date pubtime;
 

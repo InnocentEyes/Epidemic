@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,11 +52,11 @@ public class CommentServiceImpl implements CommentService {
      * @return
      */
     @Override
-    public List<String> getCommentsByNo(Comment comment) {
+    public List<Comment> getCommentsByNo(Comment comment) {
         String[] res = redis.get(comment);
         if(res != null){
             logger.info("get the comments in redis");
-            List<String> userComments = ReturnValueHandler.handlerReturnValue(res,Comment.class);
+            List<Comment> userComments = ReturnValueHandler.handlerReturnValue(res,Comment.class);
             return userComments;
         }
         List<Comment> comments = commentDao.findComment(comment);
@@ -63,9 +64,15 @@ public class CommentServiceImpl implements CommentService {
             logger.info("this type no : {} , has no comment in mysql",comment.getTypeNo());
             return null;
         }
-        for (Comment tmp : comments) {
-            redis.set(tmp);
-        }
+//        for (Comment tmp : comments) {
+//            redis.set(tmp);
+//        }
+        comments.stream()
+                .filter(element -> element.getCommentId() != null)
+                .forEach(element -> {
+                    element.setPubtime(new Date());
+                    redis.set(element);
+                });
         logger.info("set comment to redis,type no : {}",comment.getTypeNo());
         res = comments.toArray(new String[comments.size()]);
         return ReturnValueHandler.handlerReturnValue(res,Comment.class);
@@ -78,6 +85,12 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public boolean addLikes(Comment comment) {
-        return false;
+        if(!redis.update(comment) || !commentDao.updateLikes(comment)){
+            logger.error("update comment {} likes in comment type number {} error !",
+                    comment.getCommentId(),
+                    comment.getTypeNo());
+            return false;
+        }
+        return true;
     }
 }

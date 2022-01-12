@@ -3,6 +3,7 @@ package com.qzlnode.epidemic.miniprogram.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qzlnode.epidemic.miniprogram.pojo.City;
+import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
 import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import org.slf4j.Logger;
@@ -126,9 +127,28 @@ public class JsonUtil {
         return null;
     }
 
+    /**
+     *
+     * @param cities
+     * @return
+     */
     public static String cityToJson(List<City> cities){
         try {
             return MAPPER.writeValueAsString(cities);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param json
+     * @return
+     */
+    public static Comment jsonToComment(String json){
+        try {
+            return MAPPER.readValue(json,Comment.class);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

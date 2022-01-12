@@ -22,7 +22,7 @@ public interface CommentService {
      * @param comment
      * @return
      */
-    List<String> getCommentsByNo(Comment comment);
+    List<Comment> getCommentsByNo(Comment comment);
 
     /**
      * <h3>根据言论的id值增加点赞</h3>

@@ -35,6 +35,21 @@ public enum Status {
     TYPENO_TOO_SMALL(-1,"{\"message\": \"operation fail\", \"reason\": \"the comment type number too small\"}"),
 
     /**
+     *
+     */
+    COMMENTNO_OR_TYPENO_NULL(-1,"{\"message\": \"operation fail\", \"reason\": \"the comment type number or comment number is null\"}"),
+
+    /**
+     *
+     */
+    TYPENO_NULL(-1,"{\"message\": \"operation fail\", \"reason\": \"the comment type number is null\"}"),
+
+    /**
+     *
+     */
+    COMMENTNO_NULL(-1,"{\"message\": \"operation fail\", \"reason\": \"the comment number is null\"}"),
+
+    /**
      * 
      */
     PAGE_SIZE_SMALL(-1,"{\"message\": \"operation fail\", \"reason\": \"the page size must larger than 0\"}"),

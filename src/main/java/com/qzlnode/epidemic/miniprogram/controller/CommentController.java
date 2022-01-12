@@ -10,10 +10,9 @@ import com.qzlnode.epidemic.miniprogram.pojo.CommentType;
 import com.qzlnode.epidemic.miniprogram.pojo.Result;
 import com.qzlnode.epidemic.miniprogram.service.CommentService;
 import com.qzlnode.epidemic.miniprogram.service.CommentTypeService;
-import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import com.qzlnode.epidemic.miniprogram.util.ArgsHandler;
+import com.qzlnode.epidemic.miniprogram.util.MessageHolder;
 import com.qzlnode.epidemic.miniprogram.util.Status;
-import org.apache.ibatis.reflection.ArrayUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -66,25 +67,26 @@ public class CommentController {
 
     /**
      * 此接口未写完
-     * @param typeId
+     * @param typeNo
      * @return
      */
-    @JsonView(CommentView.Detail.class)
+    @JsonView(ResultView.Detail.class)
     @GetMapping(value = "/mobile/comment/getInfo",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<String>> getComments(@RequestParam(required = false) Map<String,String> typeId) throws JsonProcessingException {
-        if(typeId == null){
-            throw new NullPointerException("must contain typeId");
+    public Result getComments(@RequestParam(required = false) Map<String,String> typeNo) throws JsonProcessingException {
+        Comment comment = ArgsHandler.build().parse(Comment.class,typeNo);
+        if(comment.getTypeNo() == null || comment.getTypeNo() <= 0){
+            return new Result(Status.COMMENTNO_NULL.getCord(),Status.COMMENTNO_NULL.getReasonPhrase());
         }
-        Comment comment = ArgsHandler.build().parse(Comment.class,typeId);
-        if(comment.getTypeNo() <= 0){
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        }
-        List<String> commentsByNo = commentService.getCommentsByNo(comment);
+        List<Comment> commentsByNo = commentService.getCommentsByNo(comment);
         MessageHolder.clearData();
         if(commentsByNo == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new Result(Status.NO_RECORDS.getCord(),Status.NO_RECORDS.getReasonPhrase());
         }
-        return new ResponseEntity<>(commentsByNo,HttpStatus.OK);
+        return new Result(Status.SUCCESSFUL.getCord(),
+                Status.SUCCESSFUL.getReasonPhrase(),
+                commentsByNo.stream()
+                        .map(Object.class::cast)
+                        .collect(Collectors.toList()));
     }
 
     /**
@@ -116,10 +118,25 @@ public class CommentController {
      * @param commentId
      * @return
      */
+    @JsonView(ResultView.class)
     @GetMapping(value = "/mobile/likes",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String sendLikes(@RequestParam(required = false) Map<String,String> commentId) throws JsonProcessingException {
-        ArgsHandler.build().parse(Comment.class,commentId);
-        return Status.SUCCESSFUL.getReasonPhrase();
+    public Result sendLikes(@RequestParam(required = false) Map<String,String> commentId) throws JsonProcessingException {
+        Comment comment = ArgsHandler.build().parse(Comment.class,commentId);
+        if(comment.getTypeNo() == null || comment.getCommentId() == null){
+            return new Result(Status.COMMENTNO_OR_TYPENO_NULL.getCord(),
+                    Status.COMMENTNO_OR_TYPENO_NULL.getReasonPhrase());
+        }
+        if(comment.getComment() != null){
+            comment.setComment(null);
+        }
+        boolean target = commentService.addLikes(comment);
+        MessageHolder.clearData();
+        if(!target){
+            return new Result(Status.UNSUCCESSFUL.getCord(),
+                    Status.UNSUCCESSFUL.getReasonPhrase());
+        }
+        return new Result(Status.SUCCESSFUL.getCord(),
+                Status.SUCCESSFUL.getReasonPhrase());
     }
 
     /**
@@ -127,7 +144,7 @@ public class CommentController {
      * @param request
      * @param ex
      */
-    @ResponseStatus(code = HttpStatus.FORBIDDEN,reason = "typeId or commentId must not be empty")
+    @ResponseStatus(code = HttpStatus.FORBIDDEN,reason = "typeNo or commentId must not be empty")
     @ExceptionHandler({
             NullPointerException.class,
             JsonProcessingException.class
