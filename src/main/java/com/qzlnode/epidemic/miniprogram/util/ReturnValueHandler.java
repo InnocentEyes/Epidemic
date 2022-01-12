@@ -20,12 +20,12 @@ public class ReturnValueHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReturnValueHandler.class);
 
-    public static List handlerReturnValue(String[] values,Class object){
+    public static <T> List<T> handlerReturnValue(String[] values,Class<T> object){
         if(object.isAssignableFrom(Province.class)){
-            return handlerPRValue(values);
+            return (List<T>) handlerPRValue(values);
         }
         if(object.isAssignableFrom(Comment.class)){
-            return handlerCRvalue(values);
+            return (List<T>) handlerCRvalue(values);
         }
         return null;
     }
