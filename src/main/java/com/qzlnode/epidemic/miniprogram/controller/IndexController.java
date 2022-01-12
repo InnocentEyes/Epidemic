@@ -1,6 +1,9 @@
 package com.qzlnode.epidemic.miniprogram.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.qzlnode.epidemic.miniprogram.dto.ResultView;
+import com.qzlnode.epidemic.miniprogram.pojo.Result;
 import com.qzlnode.epidemic.miniprogram.pojo.User;
 import com.qzlnode.epidemic.miniprogram.service.IndexService;
 import com.qzlnode.epidemic.miniprogram.util.ArgsHandler;
@@ -17,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.stream.Collectors;
 
 /**
  * @author qzlzzz
@@ -36,11 +41,12 @@ public class IndexController {
      * @return
      * @throws JsonProcessingException
      */
+    @JsonView(ResultView.Detail.class)
     @PostMapping(value = "/login",produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> login(@RequestBody(required = false) String userMessage, HttpServletResponse response) throws JsonProcessingException {
+    public Result login(@RequestBody(required = false) String userMessage, HttpServletResponse response) throws JsonProcessingException {
         if(userMessage == null){
             logger.error("login :user message is null");
-            return new ResponseEntity<>(Status.UNSUCCESSFUL.getReasonPhrase(),HttpStatus.METHOD_NOT_ALLOWED);
+            return new Result(Status.LOGIN_UNSUCCESSFUL.getCord(),Status.LOGIN_UNSUCCESSFUL.getReasonPhrase());
         }
         logger.info("user message detail is {}",userMessage);
         User user = ArgsHandler.build().parse(User.class,userMessage);
@@ -50,10 +56,12 @@ public class IndexController {
             String token = Security.getToken(user);
             response.setHeader("Access-Control-Expose-Headers", "user_token");
             response.setHeader("user_token", token);
-            return new ResponseEntity<>(user.toString(),HttpStatus.OK);
+            return new Result(Status.LOGIN_SUCCESSFUL.getCord(),
+                    Status.LOGIN_SUCCESSFUL.getReasonPhrase(),
+                    Collections.singleton(user).stream().map(Object.class :: cast).collect(Collectors.toList()));
         }
         logger.info("user named: "+user.getUserName()+" login error");
-        return new ResponseEntity<>(Status.UNSUCCESSFUL.getReasonPhrase(),HttpStatus.METHOD_NOT_ALLOWED);
+        return new Result(Status.LOGIN_UNSUCCESSFUL.getCord(),Status.LOGIN_UNSUCCESSFUL.getReasonPhrase());
     }
 
     /**

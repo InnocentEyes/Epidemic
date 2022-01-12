@@ -1,16 +1,14 @@
 package com.qzlnode.epidemic.miniprogram.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
 import com.qzlnode.epidemic.miniprogram.pojo.Province;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -32,16 +30,16 @@ public class ReturnValueHandler {
 
     private static List<Comment> handlerCRvalue(String[] values){
         return Arrays.stream(values)
+                .filter(Objects::nonNull)
                 .map(element -> JsonUtil.jsonToComment(element))
                 .collect(Collectors.toList());
     }
 
     private static List<Province> handlerPRValue(String[] values){
-        List<Province> allData = new ArrayList<>();
-        for (String value : values) {
-            allData.add(JsonUtil.jsonToProvince(value));
-        }
-        return allData;
+        return Arrays.stream(values)
+                .filter(Objects::nonNull)
+                .map(element -> JsonUtil.jsonToProvince(element))
+                .collect(Collectors.toList());
     }
 
 }

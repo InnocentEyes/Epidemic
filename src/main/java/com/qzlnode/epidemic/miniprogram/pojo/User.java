@@ -1,14 +1,27 @@
 package com.qzlnode.epidemic.miniprogram.pojo;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.qzlnode.epidemic.miniprogram.dto.UserView;
+
 /**
  * <h2>用户类</h2>
  * @author qzlzzz
  */
 public class User {
+
+    @JsonView(UserView.class)
     private Integer id;
+
+    @JsonView(UserView.Detail.class)
     private String userPhoneNumber;
+
+    @JsonView(UserView.class)
     private String userName;
+
+    @JsonView(UserView.Detail.class)
     private String userPassword;
+
+    @JsonView(UserView.class)
     private String profile;
 
     public Integer getId() {

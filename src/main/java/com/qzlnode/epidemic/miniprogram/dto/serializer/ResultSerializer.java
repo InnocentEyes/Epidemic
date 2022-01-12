@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.qzlnode.epidemic.miniprogram.dto.CommentView;
+import com.qzlnode.epidemic.miniprogram.dto.UserView;
 import com.qzlnode.epidemic.miniprogram.pojo.Comment;
+import com.qzlnode.epidemic.miniprogram.pojo.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,25 +33,12 @@ public class ResultSerializer extends JsonSerializer<List<Object>> {
         mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION,false);
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jsonGenerator.writeStartArray();
-        if(objects.get(0) instanceof Comment){
-            Comment[] comments = objects.stream()
-                    .filter(Comment.class :: isInstance)
-                    .map(Comment.class :: cast)
-                    .toArray(Comment[]::new);
-            boolean target = (comments[0].getComment() == null) ? Boolean.TRUE : Boolean.FALSE;
-            if(!target){
-                mapper.setConfig(mapper.getSerializationConfig().withView(CommentView.Detail.class));
-            }else {
-                mapper.setConfig(mapper.getSerializationConfig().withView(CommentView.class));
-            }
-            jsonGenerator.setCodec(mapper);
-            for (Comment comment : comments) {
-                jsonGenerator.writeObject(comment);
-            }
-        }else {
-            for (Object object : objects) {
-                jsonGenerator.writeObject(object);
-            }
+        if(objects.get(0) instanceof User){
+            mapper.setConfig(mapper.getSerializationConfig().withView(UserView.class));
+        }
+        jsonGenerator.setCodec(mapper);
+        for (Object object : objects) {
+            jsonGenerator.writeObject(object);
         }
         jsonGenerator.writeEndArray();
     }

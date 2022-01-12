@@ -1,14 +1,11 @@
 package com.qzlnode.epidemic.miniprogram.pojo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.qzlnode.epidemic.miniprogram.dto.ResultView;
 import com.qzlnode.epidemic.miniprogram.dto.serializer.ResultSerializer;
-import com.qzlnode.epidemic.miniprogram.util.Status;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author qzlzzz
