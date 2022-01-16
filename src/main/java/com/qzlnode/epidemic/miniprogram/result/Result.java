@@ -1,4 +1,4 @@
-package com.qzlnode.epidemic.miniprogram.pojo;
+package com.qzlnode.epidemic.miniprogram.result;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

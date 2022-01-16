@@ -14,11 +14,11 @@ spring:
       path: /
       load-on-startup: 1
   datasource:
-    url: jdbc:mysql://localhost:3306/epidemic?allowMultiQueries=true #这里还需改进
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
+      url: jdbc:mysql://localhost:3306/epidemic?allowMultiQueries=true #这里还需改进
+      username: root
+      password: 123456
+      driver-class-name: com.mysql.cj.jdbc.Driver
       stat-view-servlet:
         url-pattern: /druid/
         enabled: true

@@ -1,11 +1,9 @@
 package com.qzlnode.epidemic.miniprogram.interceptor;
 
 import com.qzlnode.epidemic.miniprogram.util.Security;
-import com.qzlnode.epidemic.miniprogram.util.Status;
+import com.qzlnode.epidemic.miniprogram.result.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 

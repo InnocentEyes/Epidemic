@@ -28,14 +28,14 @@ public class ReturnValueHandler {
         return null;
     }
 
-    private static List<Comment> handlerCRvalue(String[] values){
+    private static List<Comment> handlerCRvalue(String... values){
         return Arrays.stream(values)
                 .filter(Objects::nonNull)
                 .map(element -> JsonUtil.jsonToComment(element))
                 .collect(Collectors.toList());
     }
 
-    private static List<Province> handlerPRValue(String[] values){
+    private static List<Province> handlerPRValue(String... values){
         return Arrays.stream(values)
                 .filter(Objects::nonNull)
                 .map(element -> JsonUtil.jsonToProvince(element))
